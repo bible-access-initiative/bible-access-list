@@ -1,0 +1,17 @@
+input_file="banner_organizations.avif"; height=300; base_name=$(basename "$input_file" .avif); for width in 320 480 640 768 1024 1120 1280 1600; do ffmpeg -i "$input_file" -vf "crop=${width}:${height},boxblur=1:1" -q:v 40 -y "${base_name}_${width}w.avif"; done
+input_file="banner_languages.avif"; height=300; base_name=$(basename "$input_file" .avif); for width in 320 480 640 768 1024 1120 1280 1600; do ffmpeg -i "$input_file" -vf "crop=${width}:${height},boxblur=1:1" -q:v 40 -y "${base_name}_${width}w.avif"; done
+input_file="banner_languages_maps.avif"; height=300; base_name=$(basename "$input_file" .avif); for width in 320 480 640 768 1024 1120 1280 1600; do ffmpeg -i "$input_file" -vf "crop=${width}:${height},boxblur=1:1" -q:v 40 -y "${base_name}_${width}w.avif"; done
+input_file="banner_countries.avif"; height=300; base_name=$(basename "$input_file" .avif); for width in 320 480 640 768 1024 1120 1280 1600; do ffmpeg -i "$input_file" -vf "crop=${width}:${height},boxblur=1:1" -q:v 40 -y "${base_name}_${width}w.avif"; done
+input_file="banner_bibles.avif"; height=300; base_name=$(basename "$input_file" .avif); for width in 320 480 640 768 1024 1120 1280 1600; do ffmpeg -i "$input_file" -vf "crop=${width}:${height},boxblur=1:1" -q:v 40 -y "${base_name}_${width}w.avif"; done 
+input_file="banner_bibles_base.avif"; height=300; base_name=$(basename "$input_file" .avif); for width in 320 480 640 768 1024 1120 1280 1600; do ffmpeg -i "$input_file" -vf "crop=${width}:${height},boxblur=1:1" -q:v 40 -y "${base_name}_${width}w.avif"; done
+input_file="banner_about.avif"; height=300; base_name=$(basename "$input_file" .avif); for width in 320 480 640 768 1024 1120 1280 1600; do ffmpeg -i "$input_file" -vf "crop=${width}:${height},boxblur=1:1" -q:v 40 -y "${base_name}_${width}w.avif"; done
+
+
+input_file="banner_about.avif"; height=300; width=560; base_name=$(basename "$input_file" .avif); ffmpeg -i "$input_file" -vf "crop=${width}:${height},boxblur=1:1" -q:v 100 -y "${base_name}_ogp.png"
+input_file="banner_organizations.avif"; height=300; width=560; base_name=$(basename "$input_file" .avif); ffmpeg -i "$input_file" -vf "crop=${width}:${height},boxblur=1:1" -q:v 100 -y "${base_name}_ogp.png"
+input_file="banner_languages.avif"; height=300; width=560; base_name=$(basename "$input_file" .avif); ffmpeg -i "$input_file" -vf "crop=${width}:${height},boxblur=1:1" -q:v 100 -y "${base_name}_ogp.png"
+input_file="banner_languages_maps.avif"; height=300; width=560; base_name=$(basename "$input_file" .avif); ffmpeg -i "$input_file" -vf "crop=${width}:${height},boxblur=1:1" -q:v 100 -y "${base_name}_ogp.png"
+input_file="banner_countries.avif"; height=300; width=560; base_name=$(basename "$input_file" .avif); ffmpeg -i "$input_file" -vf "crop=${width}:${height},boxblur=1:1" -q:v 100 -y "${base_name}_ogp.png"
+input_file="banner_bibles.avif"; height=300; width=560; base_name=$(basename "$input_file" .avif); ffmpeg -i "$input_file" -vf "crop=${width}:${height},boxblur=1:1" -q:v 100 -y "${base_name}_ogp.png"
+input_file="banner_bibles_base.avif"; height=300; width=560; base_name=$(basename "$input_file" .avif); ffmpeg -i "$input_file" -vf "crop=${width}:${height},boxblur=1:1" -q:v 100 -y "${base_name}_ogp.png"
+input_file="banner_about.avif"; height=300; width=560; base_name=$(basename "$input_file" .avif); ffmpeg -i "$input_file" -vf "crop=${width}:${height},boxblur=1:1" -q:v 100 -y "${base_name}_ogp.png"

@@ -1,0 +1,201 @@
+---
+import { SITE, getLanguageFromPath } from "~/config.js";
+import CountryShapes from "~/components/map/BibleAccessList/CountryShapes.astro"
+import CirclePoints from "~/components/map/BibleAccessList/CirclePoints.astro"
+import i18n from '~/components/i18n/index.js';
+const locale = getLanguageFromPath(Astro.url);
+const t = i18n[locale];
+
+const { map } = Astro.props;
+
+const bwlResponse = await fetch(`${SITE.apiLiveUrl}/bwl.json`);
+let bwlData = await bwlResponse.json();
+
+const countriesResponse = await fetch(`${SITE.apiLiveUrl}/countries?i18n=${t.iso3}`);
+let countries = await countriesResponse.json();
+let wwlScores = {};
+countries.forEach(country => {
+    const score = country.world_watch_list_score;
+    if(score > 50) {
+        wwlScores[country.id] = 1
+    }
+    if(score > 60) {
+        wwlScores[country.id] = 2
+    }
+    if(score >= 80) {
+        wwlScores[country.id] = 3 
+    }
+});
+
+function gatherStats(bwlData, fields) {
+  // Create a stats object like { private: {min: Infinity, max: -Infinity}, ... }
+  const stats = {};
+  fields.forEach(field => {
+    stats[field] = { min: Infinity, max: -Infinity };
+  });
+
+  // Update min and max for each field across every item
+  bwlData.forEach(item => {
+    fields.forEach(field => {
+      const value = item[field];
+      if (value < stats[field].min) stats[field].min = value;
+      if (value > stats[field].max) stats[field].max = value;
+    });
+  });
+
+  return stats;
+}
+
+function scaleValueToBucket(value, min, max) {
+  // Edge case If all values are the same across the dataset
+  if (min === max) return 6;
+
+  if (value <= min) return 1;
+  if (value >= max) return 11;
+
+  // Linear interpolation into [1..11]
+  // ratio = (value - min) / (max - min)
+  // bucket = 1 + ratio * 10, then round
+  const ratio = (value - min) / (max - min);
+  return Math.round(ratio * 10) + 1;
+}
+
+function createNormalizedObject(bwlData) {
+    const FIELDS_TO_NORMALIZE = ["private","family","community","national","church","violence","total"];
+    const stats = gatherStats(bwlData, FIELDS_TO_NORMALIZE);
+    const normalized = {};
+
+  bwlData.forEach(item => {
+    normalized[item.country_id] = {
+      name: item.name,
+      country_id: item.country_id,
+      rank_2024: item.rank_2024,
+      rank_aggregate_2024: item.rank_aggregate_2024,
+      Country: item.Country,
+      region: item.region,
+      sub_region: item.sub_region
+    };
+
+    FIELDS_TO_NORMALIZE.forEach(field => {
+      normalized[item.country_id][field] = scaleValueToBucket(
+        item[field],
+        stats[field].min,
+        stats[field].max
+      );
+    });
+  });
+
+  return normalized;
+}
+
+const bwl = createNormalizedObject(bwlData);
+---
+<style is:global>
+    #bwlMapWrapper path {opacity:.7}
+    #bwlMapWrapper path {fill:#ddd;stroke:#1c1917;stroke-width:2px;}
+    #bwlMapWrapper path:hover {opacity:1;stroke:#000}
+    
+    #bwlMapWrapper.current-view-bwl-private path[data-bwl-private="1"]      {fill:#f1fcf9}
+    #bwlMapWrapper.current-view-bwl-private path[data-bwl-private="2"]      {fill:#d1f6ee}
+    #bwlMapWrapper.current-view-bwl-private path[data-bwl-private="3"]      {fill:#a4ebdd}
+    #bwlMapWrapper.current-view-bwl-private path[data-bwl-private="4"]      {fill:#6edac8}
+    #bwlMapWrapper.current-view-bwl-private path[data-bwl-private="5"]      {fill:#46c3b2}
+    #bwlMapWrapper.current-view-bwl-private path[data-bwl-private="6"]      {fill:#27a596}
+    #bwlMapWrapper.current-view-bwl-private path[data-bwl-private="7"]      {fill:#1c857a}
+    #bwlMapWrapper.current-view-bwl-private path[data-bwl-private="8"]      {fill:#1b6a63}
+    #bwlMapWrapper.current-view-bwl-private path[data-bwl-private="9"]      {fill:#1a5550}
+    #bwlMapWrapper.current-view-bwl-private path[data-bwl-private="10"]     {fill:#1a4744}
+    #bwlMapWrapper.current-view-bwl-private path[data-bwl-private="11"]     {fill:#092a29}
+    #bwlMapWrapper.current-view-bwl-family path[data-bwl-family="1"]        {fill:#fdf6fc}
+    #bwlMapWrapper.current-view-bwl-family path[data-bwl-family="2"]        {fill:#fbecf9}
+    #bwlMapWrapper.current-view-bwl-family path[data-bwl-family="3"]        {fill:#f6d8f2}
+    #bwlMapWrapper.current-view-bwl-family path[data-bwl-family="4"]        {fill:#eeb9e4}
+    #bwlMapWrapper.current-view-bwl-family path[data-bwl-family="5"]        {fill:#e38fd1}
+    #bwlMapWrapper.current-view-bwl-family path[data-bwl-family="6"]        {fill:#d263ba}
+    #bwlMapWrapper.current-view-bwl-family path[data-bwl-family="7"]        {fill:#b6439b}
+    #bwlMapWrapper.current-view-bwl-family path[data-bwl-family="8"]        {fill:#a23987}
+    #bwlMapWrapper.current-view-bwl-family path[data-bwl-family="9"]        {fill:#7b2d66}
+    #bwlMapWrapper.current-view-bwl-family path[data-bwl-family="10"]       {fill:#662955}
+    #bwlMapWrapper.current-view-bwl-family path[data-bwl-family="11"]       {fill:#411132}
+    #bwlMapWrapper.current-view-bwl-community path[data-bwl-community="1"]  {fill:#fef8ec;stroke:#fceac9;}
+    #bwlMapWrapper.current-view-bwl-community path[data-bwl-community="2"]  {fill:#fceac9;stroke:#f8d38f;}
+    #bwlMapWrapper.current-view-bwl-community path[data-bwl-community="3"]  {fill:#f8d38f;stroke:#f4b046;}
+    #bwlMapWrapper.current-view-bwl-community path[data-bwl-community="4"]  {fill:#f4b046;stroke:#f29c2d;}
+    #bwlMapWrapper.current-view-bwl-community path[data-bwl-community="5"]  {fill:#f29c2d;stroke:#eb7b15;}
+    #bwlMapWrapper.current-view-bwl-community path[data-bwl-community="6"]  {fill:#eb7b15;stroke:#d0580f;}
+    #bwlMapWrapper.current-view-bwl-community path[data-bwl-community="7"]  {fill:#d0580f;stroke:#ad3b10;}
+    #bwlMapWrapper.current-view-bwl-community path[data-bwl-community="8"]  {fill:#ad3b10;stroke:#8d2e13;}
+    #bwlMapWrapper.current-view-bwl-community path[data-bwl-community="9"]  {fill:#8d2e13;stroke:#742713;}
+    #bwlMapWrapper.current-view-bwl-community path[data-bwl-community="10"] {fill:#742713;stroke:#421206;}
+    #bwlMapWrapper.current-view-bwl-community path[data-bwl-community="11"] {fill:#421206}
+    #bwlMapWrapper.current-view-bwl-national path[data-bwl-national="1"]    {fill:#f5f6ef}
+    #bwlMapWrapper.current-view-bwl-national path[data-bwl-national="2"]    {fill:#e9ebdc}
+    #bwlMapWrapper.current-view-bwl-national path[data-bwl-national="3"]    {fill:#d4d8be}
+    #bwlMapWrapper.current-view-bwl-national path[data-bwl-national="4"]    {fill:#b7bf97}
+    #bwlMapWrapper.current-view-bwl-national path[data-bwl-national="5"]    {fill:#9da774}
+    #bwlMapWrapper.current-view-bwl-national path[data-bwl-national="6"]    {fill:#86925b}
+    #bwlMapWrapper.current-view-bwl-national path[data-bwl-national="7"]    {fill:#646e42}
+    #bwlMapWrapper.current-view-bwl-national path[data-bwl-national="8"]    {fill:#4e5536}
+    #bwlMapWrapper.current-view-bwl-national path[data-bwl-national="9"]    {fill:#3f462e}
+    #bwlMapWrapper.current-view-bwl-national path[data-bwl-national="10"]   {fill:#373d2a}
+    #bwlMapWrapper.current-view-bwl-national path[data-bwl-national="11"]   {fill:#1c1f14}
+    #bwlMapWrapper.current-view-bwl-church path[data-bwl-church="1"]        {fill:#f0fdfb}
+    #bwlMapWrapper.current-view-bwl-church path[data-bwl-church="2"]        {fill:#cbfcf6}
+    #bwlMapWrapper.current-view-bwl-church path[data-bwl-church="3"]        {fill:#97f8ec}
+    #bwlMapWrapper.current-view-bwl-church path[data-bwl-church="4"]        {fill:#76f0e6}
+    #bwlMapWrapper.current-view-bwl-church path[data-bwl-church="5"]        {fill:#29d8cf}
+    #bwlMapWrapper.current-view-bwl-church path[data-bwl-church="6"]        {fill:#10bcb6}
+    #bwlMapWrapper.current-view-bwl-church path[data-bwl-church="7"]        {fill:#0a9795}
+    #bwlMapWrapper.current-view-bwl-church path[data-bwl-church="8"]        {fill:#0d7878}
+    #bwlMapWrapper.current-view-bwl-church path[data-bwl-church="9"]        {fill:#0f6060}
+    #bwlMapWrapper.current-view-bwl-church path[data-bwl-church="10"]       {fill:#124e4f}
+    #bwlMapWrapper.current-view-bwl-church path[data-bwl-church="11"]       {fill:#032e30}
+    #bwlMapWrapper.current-view-bwl-violence path[data-bwl-violence="1"]    {fill:#f2f3ff}
+    #bwlMapWrapper.current-view-bwl-violence path[data-bwl-violence="2"]    {fill:#e7e7ff}
+    #bwlMapWrapper.current-view-bwl-violence path[data-bwl-violence="3"]    {fill:#d2d2ff}
+    #bwlMapWrapper.current-view-bwl-violence path[data-bwl-violence="4"]    {fill:#b0aeff}
+    #bwlMapWrapper.current-view-bwl-violence path[data-bwl-violence="5"]    {fill:#8a81ff}
+    #bwlMapWrapper.current-view-bwl-violence path[data-bwl-violence="6"]    {fill:#634eff}
+    #bwlMapWrapper.current-view-bwl-violence path[data-bwl-violence="7"]    {fill:#4f29fe}
+    #bwlMapWrapper.current-view-bwl-violence path[data-bwl-violence="8"]    {fill:#4f29eb}
+    #bwlMapWrapper.current-view-bwl-violence path[data-bwl-violence="9"]    {fill:#3613c4}
+    #bwlMapWrapper.current-view-bwl-violence path[data-bwl-violence="10"]   {fill:#2e12a0}
+    #bwlMapWrapper.current-view-bwl-violence path[data-bwl-violence="11"]   {fill:#18086d}
+    #bwlMapWrapper.current-view-bwl-total path[data-bwl-total="1"]  {fill:#fef8ec;stroke:#fceac9;}
+    #bwlMapWrapper.current-view-bwl-total path[data-bwl-total="2"]  {fill:#fceac9;stroke:#f8d38f;}
+    #bwlMapWrapper.current-view-bwl-total path[data-bwl-total="3"]  {fill:#f8d38f;stroke:#f4b046;}
+    #bwlMapWrapper.current-view-bwl-total path[data-bwl-total="4"]  {fill:#f4b046;stroke:#f29c2d;}
+    #bwlMapWrapper.current-view-bwl-total path[data-bwl-total="5"]  {fill:#f29c2d;stroke:#eb7b15;}
+    #bwlMapWrapper.current-view-bwl-total path[data-bwl-total="6"]  {fill:#eb7b15;stroke:#d0580f;}
+    #bwlMapWrapper.current-view-bwl-total path[data-bwl-total="7"]  {fill:#d0580f;stroke:#ad3b10;}
+    #bwlMapWrapper.current-view-bwl-total path[data-bwl-total="8"]  {fill:#ad3b10;stroke:#8d2e13;}
+    #bwlMapWrapper.current-view-bwl-total path[data-bwl-total="9"]  {fill:#8d2e13;stroke:#742713;}
+    #bwlMapWrapper.current-view-bwl-total path[data-bwl-total="10"] {fill:#742713;stroke:#421206;}
+    #bwlMapWrapper.current-view-bwl-total path[data-bwl-total="11"] {fill:#421206}
+
+    #bwlMapWrapper text {
+        text-anchor:middle;
+        dominant-baseline:middle;
+        font-size: 10px;
+        fill: white;
+        text-shadow: 2px 2px 4px #222;
+        user-select:none;
+        pointer-events:none;
+    }
+</style>
+
+<div class="relative">
+    <div id="map-controls" class="z-30 absolute top-4 left-4 flex flex-col">
+        <button id="zoom-in-button" title="Zoom In" class="text-white text-2xl bg-stone-900 dark:bg-stone-950 rounded-lg w-8 h-8">+</button>
+        <button id="zoom-out-button" title="Zoom Out" class="text-white text-2xl bg-stone-900 dark:bg-stone-950 rounded-lg w-8 h-8 mt-2">-</button>
+
+    </div>
+<svg id="worldmap" class={`current-view-${map} w-full h-[50vh] z-0 relative bg-[#78B9C4] dark:bg-stone-900`} xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="svg2" version="1.0" viewBox="83 45 2528 1200">
+<CountryShapes {bwl} />
+<CirclePoints {bwl} />
+</svg>
+</div>
+
+<div id="tooltip" class="absolute hidden bg-stone-800 text-white px-2 rounded-md pointer-events-none"></div>
+
+<script src="/scripts/Map.js" defer></script>

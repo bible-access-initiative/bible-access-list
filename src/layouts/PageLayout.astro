@@ -1,0 +1,43 @@
+---
+import "~/assets/styles/base.css";
+import MetaTags from "~/components/core/MetaTags.astro";
+import BasicScripts from "~/components/core/BasicScripts.astro";
+import LocalizedFonts from "~/components/core/LocalizedFonts.astro"
+import i18n from '~/components/i18n/index.js';
+import { getLanguageFromPath } from "~/config.js";
+import { ClientRouter } from 'astro:transitions';
+import Header from "~/components/navigation/Header.astro";
+
+const locale = getLanguageFromPath(Astro.url);
+const t = i18n[locale];
+
+export const prerender = true;
+const { meta = {} } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html
+  lang={locale ?? "en"}
+  dir={t?.locale_direction ?? "ltr"}
+  class="h-full dark no-js"
+>
+<head>
+    <MetaTags {...meta} />
+    <ClientRouter />
+    <BasicScripts />
+    <LocalizedFonts />
+</head>
+
+  <body
+    class="antialiased text-stone-900 dark:text-stone-300 tracking-tight h-screen dark:bg-none dark:bg-black"
+  >
+
+  <div class="flex grow flex-col justify-between m-auto h-screen">
+    <Header />
+    <main class="pb-24 bg-white dark:bg-stone-800 w-full mx-auto grow border border-stone-300 dark:border-stone-600 border-t-0" transition:animate="fade">
+      <slot />
+    </main>
+  </div>
+
+  </body>
+</html>

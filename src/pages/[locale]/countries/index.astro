@@ -1,0 +1,123 @@
+---
+import { LocalePath } from '~/utils/StaticPathHelper';
+export function getStaticPaths() {return LocalePath();}
+
+import Layout from "~/layouts/PageLayout.astro";
+import { SITE, getLanguageFromPath } from "~/config.js";
+import Banner from "~/components/navigation/Banner.astro";
+import i18n from '~/components/i18n/index.js';
+import FuzzyDatatable from "~/components/FuzzyTableWrapper.astro";
+import countries from "~/data/country_data.json"
+const locale = getLanguageFromPath(Astro.url);
+const t = i18n[locale];
+
+let filters = [
+  {
+    name: t?.type ?? "Type", filterType: 'radio', filterColumn: "id", options: [
+      {title: t?.continents?.All ?? 'All', value: /.+/, selected: true},
+      {title: t?.territories ?? 'Territories', value: /AI|AS|AW|AX|BL|BM|BQ|BV|CC|CK|CW|CX|FK|FO|GF|GG|GI|GL|GP|GS|GU|HK|HM|IM|IO|JE|KD|KY|MF|MO|MP|MQ|MS|NC|NF|NU|PF|PM|PN|PR|RE|SH|SJ|SX|TC|TF|TK|UM|VG|VI|WF|XK|YT/},
+      {title: t?.sovereign ?? "Sovereign",value: /AI|AS|AW|AX|BL|BM|BQ|BV|CC|CK|CW|CX|FK|FO|GF|GG|GI|GL|GP|GS|GU|HK|HM|IM|IO|JE|KD|KY|MF|MO|MP|MQ|MS|NC|NF|NU|PF|PM|PN|PR|RE|SH|SJ|SX|TC|TF|TK|UM|VG|VI|WF|XK|YT/, inverse: true}
+    ]
+  },
+  {
+    name: t?.region ?? "Continents", filterType: 'radio', filterColumn: "id", iconSprite: '/images/continents.svg#', options: [
+      {code: '', title: t?.continents?.All ??'All', value: /.+/},
+      {code: 'AF', title: t?.continents?.AF ?? 'Africa', value: /AO|BF|BI|BJ|BW|CD|CF|CG|CI|CM|CV|DJ|DZ|EG|EH|ER|ET|GA|GH|GM|GN|GQ|GW|KE|KM|LR|LS|LY|MA|MG|ML|MR|MU|MW|MZ|NA|NE|NG|RE|RW|SC|SD|SH|SL|SN|SO|SS|ST|SZ|TD|TG|TN|TZ|UG|YT|ZA|ZM|ZW/},
+      {code: 'AS', title: t?.continents?.AS ?? "Asia",value: /AE|AF|AM|AZ|BD|BH|BN|BT|CC|CN|CX|GE|HK|ID|IL|IN|IO|IQ|IR|JO|JP|KG|KH|KP|KR|KW|KZ|LA|LB|LK|MM|MN|MO|MV|MY|NP|OM|PH|PK|PS|QA|SA|SG|SY|TH|TJ|TM|TR|TW|UZ|VN|YE/},
+      {code: 'EU', title: t?.continents?.NA ?? "Europe", value: /AD|AL|AT|AX|BA|BE|BG|BY|CH|CY|CZ|DE|DK|EE|ES|FI|FO|FR|GB|GG|GI|GR|HR|HU|IE|IM|IS|IT|JE|LI|LT|LU|LV|MC|MD|ME|MK|MT|NL|NO|PL|PT|RO|RS|RU|SE|SI|SJ|SK|SM|UA|VA|XK/},
+      {code: 'NA', title: t?.continents?.SA ?? "North America", value: /AG|AI|AW|BB|BL|BM|BQ|BS|BZ|CA|CR|CU|CW|DM|DO|GD|GL|GP|GT|HN|HT|JM|KN|KY|LC|MF|MQ|MS|MX|NI|PA|PM|PR|SV|SX|TC|TT|US|VC|VG|VI/},
+      {code: 'SA', title: t?.continents?.EU ?? "South America", value: /AR|BO|BR|CL|CO|EC|FK|GF|GY|PE|PY|SR|UY|VE/},
+      {code: 'OC', title: t?.continents?.OC ?? "Oceania", value: /AS|AU|CK|FJ|FM|GU|KI|MH|MP|NC|NF|NR|NU|NZ|PF|PG|PN|PW|SB|TK|TL|TO|TV|UM|VU|WF|WS/}
+    ]
+  }
+]
+
+---
+<Layout meta={{
+    title: t?.countries ?? "Countries",
+    image: {url:`${SITE.domain}/images/banner/banner_countries_ogp.png`},
+    description: t?.countries ?? "Filter the countries of the world to narrow your search"
+  }}>
+
+  <Banner
+    backgroundImageSizes="(max-width:320px) 320px, (max-width:480px) 480px, (max-width:640px) 640px, (max-width:768px) 768px, (max-width:1024px) 1024px, (max-width:1280px) 1280px, (max-width:1600px) 1600px"
+    backgroundImageSrcSet="/images/banner/banner_countries_320w.avif 320w, /images/banner/banner_countries_480w.avif 480w, /images/banner/banner_countries_640w.avif 640w, /images/banner/banner_countries_768w.avif 768w, /images/banner/banner_countries_1024w.avif 1024w, /images/banner/banner_countries_1280w.avif 1280w, /images/banner/banner_countries_1600w.avif 1600w"
+    backgroundImage="/images/banner/banner_countries.avif"
+    title={t.countries}
+    breadcrumbs={[
+      { title: t?.countries ?? "countries" }
+    ]}
+    tabs={[
+      { title: t?.countries ?? "countries", url: `/${locale}/countries` },
+      { title: t?.maps ?? "maps", url: `/${locale}/countries/maps` },
+    ]}
+  />
+
+<FuzzyDatatable data={countries} {t} {locale}
+  {filters}
+  head={[
+    {id: "country", name: t?.todo ?? "country", subtitle: "region" },
+    {id: "access_rank", name: t?.todo ?? "access_rank", type: "int" },
+    {id: "access_desc", name: t?.todo ?? "access_desc" },
+    {id: "block1_total", name: t?.todo ?? "block1_total" },
+    {id: "block2_total", name: t?.todo ?? "block2_total" },
+    {id: "block2_desc", name: t?.todo ?? "block2_desc" },
+    {id: "needs_rank", name: t?.todo ?? "needs_rank" },
+    {id: "needs_count", name: t?.todo ?? "needs_count" },
+    {id: "needs_range_desc", name: t?.todo ?? "needs_range_desc" },
+//    {id: "icon_import", name: t?.todo ?? "icon_import" },
+//    {id: "icon_print", name: t?.todo ?? "icon_print" },
+//    {id: "icon_store", name: t?.todo ?? "icon_store" },
+//    {id: "icon_own", name: t?.todo ?? "icon_own" },
+//    {id: "icon_distribute", name: t?.todo ?? "icon_distribute" },
+//    {id: "icon_poverty", name: t?.todo ?? "icon_poverty" },
+//    {id: "icon_internet", name: t?.todo ?? "icon_internet" },
+//    {id: "icon_logistics", name: t?.todo ?? "icon_logistics" },
+//    {id: "icon_electricity", name: t?.todo ?? "icon_electricity" },
+//    {id: "icon_literacy", name: t?.todo ?? "icon_literacy" },
+    {id: "ownership_range", name: t?.todo ?? "ownership_range" },
+    {id: "ownership_desc", name: t?.todo ?? "ownership_desc" },
+    {id: "conflict_desc", name: t?.todo ?? "conflict_desc" },
+    {id: "religion_main", name: t?.todo ?? "religion_main" },
+    {id: "pop_total", name: t?.todo ?? "pop_total" },
+    {id: "pop_christian", name: t?.todo ?? "pop_christian" },
+    {id: "pct_christian", name: t?.todo ?? "pct_christian" },
+    {id: "wwl_2025_rank", name: t?.todo ?? "wwl_2025_rank" },
+//    {id: "icon_islamic_opp", name: t?.todo ?? "icon_islamic_opp" },
+//    {id: "icon_religious_nat", name: t?.todo ?? "icon_religious_nat" },
+//    {id: "icon_ethno_hostility", name: t?.todo ?? "icon_ethno_hostility" },
+//    {id: "icon_clan_opp", name: t?.todo ?? "icon_clan_opp" },
+//    {id: "icon_denom_opp", name: t?.todo ?? "icon_denom_opp" },
+//    {id: "icon_comm_opp", name: t?.todo ?? "icon_comm_opp" },
+//    {id: "icon_secular_intol", name: t?.todo ?? "icon_secular_intol" },
+//    {id: "icon_dict_paranoia", name: t?.todo ?? "icon_dict_paranoia" },
+//    {id: "icon_crime_corr", name: t?.todo ?? "icon_crime_corr" },
+    {id: "bible_prio1", name: t?.todo ?? "bible_prio1" },
+    {id: "bible_prio2", name: t?.todo ?? "bible_prio2" },
+    {id: "lang_total", name: t?.todo ?? "lang_total" },
+    {id: "lang_full_bible", name: t?.todo ?? "lang_full_bible" },
+    {id: "lang_nt", name: t?.todo ?? "lang_nt" },
+    {id: "lang_portion", name: t?.todo ?? "lang_portion" },
+    {id: "lang_none", name: t?.todo ?? "lang_none" },
+    {id: "church_growth", name: t?.todo ?? "church_growth" },
+]} />
+
+<table class="w-full lite-table">
+  <thead>
+      <th>{t?.title ?? "Title"}</th>
+      <th>{t?.population ?? "Population"}</th>
+      <th>{t?.region ?? "Region"}</th>
+      <th>{t?.languages ?? "Languages"}</th>
+  </thead>
+  <tbody>
+      {countries.map(country => (<tr>
+          <td><a href={`/${locale}/countries/${country.id}`}>{country.name}</a></td>
+          <td>{country.population}</td>
+          <td>{country.region_name}</td>
+          <td>{country.language_count}</td>
+          </tr>))}
+  </tbody>
+</table>
+
+</Layout>
+

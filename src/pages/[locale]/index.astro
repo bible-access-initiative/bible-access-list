@@ -1,0 +1,22 @@
+---
+import { LocalePath } from '~/utils/StaticPathHelper';
+export function getStaticPaths() {return LocalePath();}
+
+import Layout from "~/layouts/PageLayout.astro"
+import i18n from '~/components/i18n/index.js';
+import { getLanguageFromPath, SITE } from '~/config.js'
+ 
+const locale = getLanguageFromPath(Astro.url)
+const t = i18n[locale]
+const {content} = Astro.props
+
+---
+
+<Layout meta={{title:t?.home ?? "Home", description: t?.cs_tagline ?? '' }}>
+
+	<div class="text-center py-8 max-w-6xl mx-auto">
+		<p class="text-xl pb-4">Ranking where <b>Bible Shortage</b> is Greatest and <b>Bible Access</b> is Most Challenged.</p>
+		<p>This Bible Access List is a research initiative identifying where it is most difficult for people to access Bibles and highlights the nations with the most significant shortages. The results are based on expert analysis of 34 data points and insights from consultations with over a thousand national experts.</p>
+	</div>
+	  
+</Layout>

@@ -1,0 +1,53 @@
+---
+const {} = Astro.props
+---
+
+<script is:inline>
+const setDarkMode = () => {
+    const isDarkModePreferred = () => {
+        return localStorage.theme === "dark" ||
+               (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    };
+
+    const toggleClasses = (element, condition, classesOn, classesOff) => {
+        classesOn.forEach(cls => element.classList.toggle(cls, condition));
+        classesOff.forEach(cls => element.classList.toggle(cls, !condition));
+    };
+
+    const toggleDarkMode = () => {
+        const isDark = document.documentElement.classList.toggle("dark");
+        localStorage.theme = isDark ? "dark" : "light";
+    };
+
+    const preferredDarkMode = isDarkModePreferred();
+    document.documentElement.classList.toggle("dark", preferredDarkMode);
+    attachEvent("[data-aw-toggle-color-scheme]", "click", toggleDarkMode);
+};
+document.addEventListener("DOMContentLoaded", setDarkMode);
+document.addEventListener("astro:after-swap", setDarkMode);
+
+
+  const clearNoJsFeatures = () => {
+    document.documentElement.classList.remove("no-js");
+  }
+  document.addEventListener("DOMContentLoaded", clearNoJsFeatures);
+  document.addEventListener("astro:after-swap", clearNoJsFeatures);
+
+
+
+
+  function attachEvent(selector, event, fn) {
+    const matches = document.querySelectorAll(selector)
+    if (matches && matches.length) {
+      matches.forEach((elem) => {
+        elem.addEventListener(
+          event,
+          function () {
+            fn(elem)
+          },
+          false
+        )
+      })
+    }
+  }
+</script>

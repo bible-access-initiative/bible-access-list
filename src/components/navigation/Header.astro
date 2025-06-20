@@ -1,0 +1,25 @@
+---
+import Search from "~/components/navigation/Search.astro"
+import i18n from '~/components/i18n/index.js';
+import { getLanguageFromPath } from '~/config.js';
+import MainMenu from "./MainMenu.astro";
+const locale = getLanguageFromPath(Astro.url);
+const t = i18n[locale]
+---
+
+<header class="sticky top-0 z-40 flex-none mx-auto w-full bg-stone-100/80 dark:bg-stone-900/90 backdrop-blur-sm border-stone-300 dark:border-stone-600 border-b">
+  <div class="px-3 md:px-4 flex flex-wrap lg:flex-nowrap justify-around max-w-6xl mx-auto">
+    <a class="flex items-center py-4 text-2xl" href={`/${locale}/`}>Bible Access List</a>
+    <MainMenu />
+  </div>
+</header>
+
+<style is:global>
+  [data-aw-toggle-menu].expanded .line1 {
+    transform: rotate(-45deg) translate(-12px, 8px);
+  }
+
+  [data-aw-toggle-menu].expanded .line2 {
+    transform: rotate(45deg) translate(4px, -16px);
+  }
+</style>

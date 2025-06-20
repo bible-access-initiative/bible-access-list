@@ -1,0 +1,17 @@
+---
+import { LocalePath } from '~/utils/StaticPathHelper';
+export function getStaticPaths() {return LocalePath();}
+
+import Layout from "~/layouts/PageLayout.astro"
+import i18n from '~/components/i18n/index.js';
+import { getLanguageFromPath, SITE } from '~/config.js'
+ 
+const locale = getLanguageFromPath(Astro.url)
+const t = i18n[locale]
+const {content} = Astro.props
+
+---
+
+<Layout meta={{title:t?.home ?? "Home", description: t?.cs_tagline ?? '' }}>
+<h1>Research, coming soon</h1>
+</Layout>
