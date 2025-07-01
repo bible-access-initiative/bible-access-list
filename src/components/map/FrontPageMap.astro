@@ -17,52 +17,46 @@ const t = i18n[locale];
 ---
 
 <div class="relative">
-    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 inline-flex rounded-t-md shadow-xs z-50">
-        <a
-            href={`/${locale}/countries`}
-            class="relative inline-flex items-center rounded-tl-md bg-white px-3 py-2 text-sm font-semibold text-stone-900 ring-1 ring-stone-300 ring-inset hover:bg-stone-50 focus:z-10"
-        >
+    <span class="absolute top-0 left-1/2 transform -translate-x-1/2 inline-flex z-50 text-base ">
+
+        <button id="access-rank-button" type="button" class="map-tab rounded-bl-lg">
+            Access<span class="hidden ml-1 md:block">Restrictions</span>
+        </button>
+
+        <button id="needs-rank-button" type="button" class="map-tab">
+             <span class="hidden mr-1 md:block">Estimated</span>Shortage
+        </button>
+
+        <a href={`/${locale}/countries`} class="map-tab rounded-br-lg">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="-ml-0.5 mr-1 size-4">
                 <path
-                    d="M2 4a2 2 0 0 1 2-2h8a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2ZM2 9.25a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 9.25ZM2.75 12.5a.75.75 0 0 0 0 1.5h10.5a.75.75 0 0 0 0-1.5H2.75Z"
+                        d="M2 4a2 2 0 0 1 2-2h8a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2ZM2 9.25a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 9.25ZM2.75 12.5a.75.75 0 0 0 0 1.5h10.5a.75.75 0 0 0 0-1.5H2.75Z"
                 ></path>
             </svg>
-            List View
+            List<span class="hidden ml-1 md:block">View</span>
         </a>
-        <button
-            id="access-rank-button"
-            type="button"
-            class="relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-stone-900 ring-1 ring-stone-300 ring-inset hover:bg-stone-50 focus:z-10"
-            >Access Rank</button
-        >
-        <button
-            id="needs-rank-button"
-            type="button"
-            class="relative -ml-px inline-flex items-center rounded-tr-md bg-white px-3 py-2 text-sm font-semibold text-stone-900 ring-1 ring-stone-300 ring-inset hover:bg-stone-50 focus:z-10"
-            >Needs Rank</button
-        >
     </span>
 
     <div id="map-controls" class="z-30 absolute top-4 left-4 flex flex-col">
         <button
-            id="zoom-in-button"
-            title="Zoom In"
-            class="text-white text-2xl bg-stone-900 dark:bg-stone-950 rounded-lg w-8 h-8">+</button
+                id="zoom-in-button"
+                title="Zoom In"
+                class="text-white text-2xl bg-stone-900 dark:bg-stone-950 rounded-lg w-8 h-8">+</button
         >
         <button
-            id="zoom-out-button"
-            title="Zoom Out"
-            class="text-white text-2xl bg-stone-900 dark:bg-stone-950 rounded-lg w-8 h-8 mt-2">-</button
+                id="zoom-out-button"
+                title="Zoom Out"
+                class="text-white text-2xl bg-stone-900 dark:bg-stone-950 rounded-lg w-8 h-8 mt-2">-</button
         >
     </div>
     <svg
-        id="worldmap"
-        class="w-full h-[75vh] z-0 relative bg-stone-800 dark:bg-stone-900 access-rank"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        id="svg2"
-        version="1.0"
-        viewBox="83 45 2528 1200"
+            id="worldmap"
+            class="w-full h-[75vh] z-0 relative bg-stone-100/80 dark:bg-stone-900 access-rank"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            id="svg2"
+            version="1.0"
+            viewBox="83 45 2528 1200"
     >
         <CountryLinks />
         <CirclePoints {bal} />
@@ -72,174 +66,205 @@ const t = i18n[locale];
 <MapPopup />
 
 <div id="tooltip" class="absolute hidden bg-stone-800 text-white px-2 rounded-md pointer-events-none"></div>
+
 <script>
-import { openSlideoutPanel } from "./CountryDetailPanel/slideout-panel.js";
+    import { openSlideoutPanel } from "./CountryDetailPanel/slideout-panel.js";
 
-document.addEventListener("DOMContentLoaded", initializeSvgInteractions);
-document.addEventListener("astro:after-swap", initializeSvgInteractions);
+    document.addEventListener("DOMContentLoaded", initializeSvgInteractions);
+    document.addEventListener("astro:after-swap", initializeSvgInteractions);
 
-function initializeSvgInteractions() {
-  const svg = document.getElementById("worldmap");
-  const tooltip = document.getElementById("tooltip");
+    function initializeSvgInteractions() {
+        const svg = document.getElementById("worldmap");
+        const tooltip = document.getElementById("tooltip");
 
-  if (!svg) return;
+        if (!svg) return;
 
-  let isPanning = false;
-  let startX = 0,
-    startY = 0;
-  let viewBox = { x: 0, y: 0, width: 800, height: 600 };
+        let isPanning = false;
+        let startX = 0,
+            startY = 0;
+        let viewBox = { x: 0, y: 0, width: 800, height: 600 };
 
-  function setInitialViewBox() {
-    const svgRect = svg.getBoundingClientRect();
-    const contentWidth = 2528;
-    const contentHeight = 1200;
-    const contentAspectRatio = contentWidth / contentHeight;
-    const containerAspectRatio = svgRect.width / svgRect.height;
-    let viewBoxWidth, viewBoxHeight;
+        function setInitialViewBox() {
+            const svgRect = svg.getBoundingClientRect();
+            const contentWidth = 2528;
+            const contentHeight = 1200;
+            const contentAspectRatio = contentWidth / contentHeight;
+            const containerAspectRatio = svgRect.width / svgRect.height;
+            let viewBoxWidth, viewBoxHeight;
 
-    if (containerAspectRatio > contentAspectRatio) {
-      viewBoxHeight = contentHeight;
-      viewBoxWidth = contentHeight * containerAspectRatio;
-    } else {
-      viewBoxWidth = contentWidth;
-      viewBoxHeight = contentWidth / containerAspectRatio;
-    }
+            if (containerAspectRatio > contentAspectRatio) {
+                viewBoxHeight = contentHeight;
+                viewBoxWidth = contentHeight * containerAspectRatio;
+            } else {
+                viewBoxWidth = contentWidth;
+                viewBoxHeight = contentWidth / containerAspectRatio;
+            }
 
-    viewBox = {
-      x: 83 - (viewBoxWidth - contentWidth) / 2,
-      y: 45 - (viewBoxHeight - contentHeight) / 2,
-      width: viewBoxWidth,
-      height: viewBoxHeight,
-    };
+            viewBox = {
+                x: 83 - (viewBoxWidth - contentWidth) / 2,
+                y: 45 - (viewBoxHeight - contentHeight) / 2,
+                width: viewBoxWidth,
+                height: viewBoxHeight,
+            };
 
-    svg.setAttribute("viewBox", `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
-  }
+            svg.setAttribute("viewBox", `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
+        }
 
-  svg.addEventListener("mouseover", showTooltip);
-  svg.addEventListener("mousemove", showTooltip);
-  svg.addEventListener("mouseout", () => {
-    tooltip.style.display = "none";
-  });
-
-  function showTooltip(event) {
-    const target = event.target.closest("a");
-    if (target) {
-      const title = target.getAttribute("title");
-      if (title) {
-        tooltip.style.left = `${event.clientX + 10}px`;
-        tooltip.style.top = `${event.clientY + 10}px`;
-        tooltip.innerText = title;
-        tooltip.style.display = "block";
-      }
-    }
-  }
-
-  svg.addEventListener("mousedown", (e) => {
-    isPanning = true;
-    startX = e.clientX;
-    startY = e.clientY;
-  });
-
-  svg.addEventListener("mousemove", (e) => {
-    if (isPanning) {
-      viewBox.x += startX - e.clientX;
-      viewBox.y += startY - e.clientY;
-      svg.setAttribute("viewBox", `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
-      startX = e.clientX;
-      startY = e.clientY;
-    }
-  });
-
-  svg.addEventListener("mouseup", () => (isPanning = false));
-  svg.addEventListener("mouseleave", () => (isPanning = false));
-
-  // Zoom
-  svg.addEventListener("wheel", (e) => {
-    e.preventDefault();
-    const scaleFactor = 1 - e.deltaY * 0.002;
-    zoom(scaleFactor, e.clientX, e.clientY);
-  });
-
-  function zoom(scaleFactor, clientX, clientY) {
-    const svgPoint = svg.createSVGPoint();
-    const loc = Object.assign(svgPoint, {
-      x: clientX,
-      y: clientY,
-    }).matrixTransform(svg.getScreenCTM().inverse());
-
-    const newWidth = viewBox.width * scaleFactor;
-    const newHeight = viewBox.height * scaleFactor;
-
-    if ((newWidth <= 5500 && newHeight <= 5500) || scaleFactor < 1) {
-      if (newWidth >= 100 && newHeight >= 100) {
-        viewBox.x = loc.x - (loc.x - viewBox.x) * scaleFactor;
-        viewBox.y = loc.y - (loc.y - viewBox.y) * scaleFactor;
-        viewBox.width = newWidth;
-        viewBox.height = newHeight;
-        svg.setAttribute("viewBox", `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
-      }
-    }
-  }
-
-  document.getElementById("zoom-in-button")?.addEventListener("click", () => {
-    zoom(0.8, svg.clientWidth / 2, svg.clientHeight / 2);
-  });
-
-  document.getElementById("zoom-out-button")?.addEventListener("click", () => {
-    zoom(1.2, svg.clientWidth / 2, svg.clientHeight / 2);
-  });
-
-
-  svg.addEventListener("click", openSlideoutPanel);
-  document.getElementById("access-rank-button")?.addEventListener("click", () => toggleMapRankClass("access-rank"));
-  document.getElementById("needs-rank-button")?.addEventListener("click", () => toggleMapRankClass("needs-rank"));
-
-
-  function toggleMapRankClass(selectedClass) {
-  const map = document.getElementById("worldmap");
-  if (!map) return;
-
-  const accessTexts = map.querySelectorAll('text[id^="access_"]');
-  const needsTexts = map.querySelectorAll('text[id^="needs_"]');
-
-  if (selectedClass === "access-rank") {
-    accessTexts.forEach(text => text.setAttribute("visibility", "visible"));
-    needsTexts.forEach(text => text.setAttribute("visibility", "hidden"));
-  } else if (selectedClass === "needs-rank") {
-    accessTexts.forEach(text => text.setAttribute("visibility", "hidden"));
-    needsTexts.forEach(text => text.setAttribute("visibility", "visible"));
-  } else {
-    accessTexts.forEach(text => text.setAttribute("visibility", "hidden"));
-    needsTexts.forEach(text => text.setAttribute("visibility", "hidden"));
-  }
-
-  // Swap bwl-logo-nX <=> bwl-logo-aX
-  for (let i = 1; i <= 5; i++) {
-    const nodes = document.querySelectorAll(`.bwl-logo-n${i}, .bwl-logo-a${i}`);
-    if(selectedClass === "access-rank") {
-        nodes.forEach(node => {
-          if (node.classList.contains(`bwl-logo-n${i}`)) {
-            node.classList.remove(`bwl-logo-n${i}`);
-            node.classList.add(`bwl-logo-a${i}`);
-          }
+        svg.addEventListener("mouseover", showTooltip);
+        svg.addEventListener("mousemove", showTooltip);
+        svg.addEventListener("mouseout", () => {
+            tooltip.style.display = "none";
         });
-    } else {
-        nodes.forEach(node => {
-          if (node.classList.contains(`bwl-logo-a${i}`)) {
-            node.classList.remove(`bwl-logo-a${i}`);
-            node.classList.add(`bwl-logo-n${i}`);
-          }
+
+        function showTooltip(event) {
+            const target = event.target.closest("a");
+            if (target) {
+                const title = target.getAttribute("title");
+                if (title) {
+                    tooltip.style.left = `${event.clientX + 10}px`;
+                    tooltip.style.top = `${event.clientY + 10}px`;
+                    tooltip.innerText = title;
+                    tooltip.style.display = "block";
+                }
+            }
+        }
+
+        svg.addEventListener("mousedown", (e) => {
+            isPanning = true;
+            startX = e.clientX;
+            startY = e.clientY;
         });
+
+        svg.addEventListener("mousemove", (e) => {
+            if (isPanning) {
+                viewBox.x += startX - e.clientX;
+                viewBox.y += startY - e.clientY;
+                svg.setAttribute("viewBox", `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
+                startX = e.clientX;
+                startY = e.clientY;
+            }
+        });
+
+        svg.addEventListener("mouseup", () => (isPanning = false));
+        svg.addEventListener("mouseleave", () => (isPanning = false));
+
+        // Zoom
+        svg.addEventListener("wheel", (e) => {
+            e.preventDefault();
+            const scaleFactor = 1 - e.deltaY * 0.002;
+            zoom(scaleFactor, e.clientX, e.clientY);
+        });
+
+        function zoom(scaleFactor, clientX, clientY) {
+            const svgPoint = svg.createSVGPoint();
+            const loc = Object.assign(svgPoint, {
+                x: clientX,
+                y: clientY,
+            }).matrixTransform(svg.getScreenCTM().inverse());
+
+            const newWidth = viewBox.width * scaleFactor;
+            const newHeight = viewBox.height * scaleFactor;
+
+            // Store the initial size once
+            if (!viewBox.initialWidth) {
+                viewBox.initialWidth = viewBox.width;
+                viewBox.initialHeight = viewBox.height;
+            }
+
+            const initialWidth = viewBox.initialWidth;
+            const zoomRatio = initialWidth / newWidth; // > 1 means zoomed in, < 1 means zoomed out
+
+            const minZoom = 0.8; // 80% (zoomed out)
+            const maxZoom = 3.0; // 300% (zoomed in)
+
+            if (zoomRatio >= minZoom && zoomRatio <= maxZoom) {
+                viewBox.x = loc.x - (loc.x - viewBox.x) * scaleFactor;
+                viewBox.y = loc.y - (loc.y - viewBox.y) * scaleFactor;
+                viewBox.width = newWidth;
+                viewBox.height = newHeight;
+                svg.setAttribute("viewBox", `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
+            }
+        }
+
+        document.getElementById("zoom-in-button")?.addEventListener("click", () => {
+            zoom(0.8, svg.clientWidth / 2, svg.clientHeight / 2);
+        });
+
+        document.getElementById("zoom-out-button")?.addEventListener("click", () => {
+            zoom(1.2, svg.clientWidth / 2, svg.clientHeight / 2);
+        });
+
+        svg.addEventListener("click", openSlideoutPanel);
+        document.getElementById("access-rank-button")?.addEventListener("click", () => toggleMapRankClass("access-rank"));
+        document.getElementById("needs-rank-button")?.addEventListener("click", () => toggleMapRankClass("needs-rank"));
+
+        function setActiveTab(activeButtonId) {
+            // Remove active class from all tab buttons
+            const allTabs = document.querySelectorAll('.map-tab');
+            allTabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Add active class to the selected tab
+            const activeTab = document.getElementById(activeButtonId);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+        }
+
+        function toggleMapRankClass(selectedClass) {
+            const map = document.getElementById("worldmap");
+            if (!map) return;
+
+            const accessTexts = map.querySelectorAll('text[id^="access_"]');
+            const needsTexts = map.querySelectorAll('text[id^="needs_"]');
+
+            let activeButtonId = null;
+
+            if (selectedClass === "access-rank") {
+                accessTexts.forEach(text => text.setAttribute("visibility", "visible"));
+                needsTexts.forEach(text => text.setAttribute("visibility", "hidden"));
+                activeButtonId = "access-rank-button";
+            } else if (selectedClass === "needs-rank") {
+                accessTexts.forEach(text => text.setAttribute("visibility", "hidden"));
+                needsTexts.forEach(text => text.setAttribute("visibility", "visible"));
+                activeButtonId = "needs-rank-button";
+            } else {
+                accessTexts.forEach(text => text.setAttribute("visibility", "hidden"));
+                needsTexts.forEach(text => text.setAttribute("visibility", "hidden"));
+            }
+
+            // Set the active tab styling
+            setActiveTab(activeButtonId);
+
+            // Swap bwl-logo-nX <=> bwl-logo-aX using forEach to avoid JSX conflicts
+            const logoNumbers = [1, 2, 3, 4, 5];
+            logoNumbers.forEach(i => {
+                const nodes = document.querySelectorAll(`.bwl-logo-n${i}, .bwl-logo-a${i}`);
+                if(selectedClass === "access-rank") {
+                    nodes.forEach(node => {
+                        if (node.classList.contains(`bwl-logo-n${i}`)) {
+                            node.classList.remove(`bwl-logo-n${i}`);
+                            node.classList.add(`bwl-logo-a${i}`);
+                        }
+                    });
+                } else {
+                    nodes.forEach(node => {
+                        if (node.classList.contains(`bwl-logo-a${i}`)) {
+                            node.classList.remove(`bwl-logo-a${i}`);
+                            node.classList.add(`bwl-logo-n${i}`);
+                        }
+                    });
+                }
+            });
+
+            map.classList.remove("access-rank", "needs-rank");
+            map.classList.add(selectedClass);
+        }
+
+        setInitialViewBox();
+
+        // Initialize with default active tab (Access Restrictions)
+        setActiveTab("access-rank-button");
     }
-
-  }
-
-  map.classList.remove("access-rank", "needs-rank");
-  map.classList.add(selectedClass);
-}
-
-
-  setInitialViewBox();
-}
-
 </script>

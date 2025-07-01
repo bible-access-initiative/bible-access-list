@@ -2,22 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
-.access-rank a[data-bwl-access="8"] path  {fill:#ffeda0;stroke:#fed976;stroke-width: 2px}
-.access-rank a[data-bwl-access="7"] path  {fill:#fed976;stroke:#feb24c;stroke-width: 2px}
-.access-rank a[data-bwl-access="6"] path  {fill:#feb24c;stroke:#fd8d3c;stroke-width: 2px}
+.access-rank a[data-bwl-access="8"] path  {fill: #fbf1d2;stroke: #eed191;stroke-width: 2px}
+.access-rank a[data-bwl-access="7"] path  {fill: #f2da9c;stroke: #f9c274;stroke-width: 2px}
+.access-rank a[data-bwl-access="6"] path  {fill: #f4bc7a;stroke: #f8a673;stroke-width: 2px}
 .access-rank a[data-bwl-access="5"] path  {fill:#fd8d3c;stroke:#fc4e2a;stroke-width: 2px}
 .access-rank a[data-bwl-access="4"] path  {fill:#fc4e2a;stroke:#e31a1c;stroke-width: 2px}
 .access-rank a[data-bwl-access="3"] path  {fill:#e31a1c;stroke:#bd0026;stroke-width: 2px}
 .access-rank a[data-bwl-access="2"] path  {fill:#bd0026;stroke:#800026;stroke-width: 2px}
 .access-rank a[data-bwl-access="1"] path  {fill:#800026;stroke:#67000D;stroke-width: 2px}
-.needs-rank a[data-bwl-needs="8"] path    {fill:#edf8b1;stroke:#c7e9b4;}
-.needs-rank a[data-bwl-needs="7"] path    {fill:#c7e9b4;stroke:#7fcdbb;}
-.needs-rank a[data-bwl-needs="6"] path    {fill:#7fcdbb;stroke:#41b6c4;}
-.needs-rank a[data-bwl-needs="5"] path    {fill:#41b6c4;stroke:#1d91c0;}
-.needs-rank a[data-bwl-needs="4"] path    {fill:#1d91c0;stroke:#225ea8;}
-.needs-rank a[data-bwl-needs="3"] path    {fill:#225ea8;stroke:#253494;}
-.needs-rank a[data-bwl-needs="2"] path    {fill:#253494;stroke:#081d58;}
-.needs-rank a[data-bwl-needs="1"] path    {fill:#081d58;}
+.needs-rank a[data-bwl-needs="8"] path    {fill:#fff5f0;stroke:#c7e9b4;}
+.needs-rank a[data-bwl-needs="7"] path    {fill:#fee0d2;stroke:#7fcdbb;}
+.needs-rank a[data-bwl-needs="6"] path    {fill:#fcbba1;stroke:#41b6c4;}
+.needs-rank a[data-bwl-needs="5"] path    {fill:#fc9272;stroke:#1d91c0;}
+.needs-rank a[data-bwl-needs="4"] path    {fill:#fb6a4a;stroke:#225ea8;}
+.needs-rank a[data-bwl-needs="3"] path    {fill:#ef3b2c;stroke:#253494;}
+.needs-rank a[data-bwl-needs="2"] path    {fill:#cb181d;stroke:#081d58;}
+.needs-rank a[data-bwl-needs="1"] path    {fill:#99000d;}
 path text                                 {text-shadow: 3px 2px 4px rgba(0,0,0,0.50)}
 
 .bwl-logo-a5 {fill:#fd8d3c;}
@@ -31,3 +31,15 @@ path text                                 {text-shadow: 3px 2px 4px rgba(0,0,0,0
 .bwl-logo-n3 {fill:#41b6c4;}
 .bwl-logo-n2 {fill:#1d91c0;}
 .bwl-logo-n1 {fill:#225ea8;}
+
+.map-tab {
+    @apply relative inline-flex items-center px-5 py-2
+    opacity-80 hover:opacity-100 border border-t-0 focus:z-10 shadow-lg
+    bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-200 border-stone-300 dark:border-stone-500
+    hover:bg-stone-100 dark:hover:bg-stone-700 hover:text-stone-900 dark:hover:text-stone-100;
+}
+
+.map-tab.active {
+    @apply !text-orange-700 dark:!text-orange-400 !opacity-100 font-semibold;
+}
+

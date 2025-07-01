@@ -14,13 +14,16 @@ const {content} = Astro.props
 ---
 
 <Layout meta={{title:t?.home ?? "Home", description: t?.cs_tagline ?? '' }}>
-	<div>
-		<FrontPageMap />
-	</div>
-	<div class="text-center py-8 max-w-6xl mx-auto">
-		<p class="text-xl pb-4">Ranking where <b>Bible Shortage</b> is Greatest and <b>Bible Access</b> is Most Challenged.</p>
-		<p>This Bible Access List is a research initiative identifying where it is most difficult for people to access Bibles and highlights the nations with the most significant shortages. The results are based on expert analysis of 34 data points and insights from consultations with over a thousand national experts.</p>
-	</div>
+	<section class="mx-12 lg:mx-16">
+		<div class="text-center py-8 max-w-6xl mx-auto">
+			<div class="md: text-xl pb-4">Ranking where <b>Bible Shortage</b> is Greatest and <b>Bible Access</b> is Most Challenged.</div>
+			<div class="text-xs md:text-base">This Bible Access List is a research initiative identifying where it is most difficult for people to access Bibles and highlights the nations with the most significant shortages. The results are based on expert analysis of 34 data points and insights from consultations with over a thousand national experts.</div>
+		</div>
+		<div class="rounded-xl  shadow-lg border border-stone-300 dark:border-stone-600">
+			<FrontPageMap />
+		</div>
+	</section>
+
 	<div class="bg-white dark:bg-stone-900 py-24 sm:py-32">
 		<div class="mx-auto max-w-7xl px-6 lg:px-8">
 		  <div class="grid grid-cols-1 items-center gap-x-8 gap-y-16 lg:grid-cols-2">
