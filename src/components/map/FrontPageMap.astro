@@ -9,7 +9,6 @@ import MapPopup from ".//CountryDetailPanel/SlideOutPanel.astro";
 import CountryLinks from "./CountryLinks.astro";
 import bal from "../../data/country_data.json";
 import CirclePoints from "./CountryRankCircles/CirclePoints.astro";
-
 import { getLanguageFromPath, SITE } from "~/config.js";
 
 const locale = getLanguageFromPath(Astro.url);
@@ -148,7 +147,6 @@ const t = i18n[locale];
         svg.addEventListener("mouseup", () => (isPanning = false));
         svg.addEventListener("mouseleave", () => (isPanning = false));
 
-        // Zoom
         svg.addEventListener("wheel", (e) => {
             e.preventDefault();
             const scaleFactor = 1 - e.deltaY * 0.002;
@@ -165,17 +163,16 @@ const t = i18n[locale];
             const newWidth = viewBox.width * scaleFactor;
             const newHeight = viewBox.height * scaleFactor;
 
-            // Store the initial size once
             if (!viewBox.initialWidth) {
                 viewBox.initialWidth = viewBox.width;
                 viewBox.initialHeight = viewBox.height;
             }
 
             const initialWidth = viewBox.initialWidth;
-            const zoomRatio = initialWidth / newWidth; // > 1 means zoomed in, < 1 means zoomed out
+            const zoomRatio = initialWidth / newWidth;
 
-            const minZoom = 0.8; // 80% (zoomed out)
-            const maxZoom = 3.0; // 300% (zoomed in)
+            const minZoom = 0.8;
+            const maxZoom = 3.0;
 
             if (zoomRatio >= minZoom && zoomRatio <= maxZoom) {
                 viewBox.x = loc.x - (loc.x - viewBox.x) * scaleFactor;
@@ -199,13 +196,11 @@ const t = i18n[locale];
         document.getElementById("needs-rank-button")?.addEventListener("click", () => toggleMapRankClass("needs-rank"));
 
         function setActiveTab(activeButtonId) {
-            // Remove active class from all tab buttons
             const allTabs = document.querySelectorAll('.map-tab');
             allTabs.forEach(tab => {
                 tab.classList.remove('active');
             });
 
-            // Add active class to the selected tab
             const activeTab = document.getElementById(activeButtonId);
             if (activeTab) {
                 activeTab.classList.add('active');
@@ -216,28 +211,23 @@ const t = i18n[locale];
             const map = document.getElementById("worldmap");
             if (!map) return;
 
-            const accessTexts = map.querySelectorAll('text[id^="access_"]');
-            const needsTexts = map.querySelectorAll('text[id^="needs_"]');
-
             let activeButtonId = null;
+            const elements = map.querySelectorAll('text.is-access-rank, text.is-needs-rank, circle.is-access-rank, circle.is-needs-rank');
+            elements.forEach(el => {
+                const isAccess = el.classList.contains('is-access-rank');
+                const isNeeds = el.classList.contains('is-needs-rank');
+                if (isAccess && isNeeds) {
+                    el.setAttribute('visibility', 'visible');
+                } else if (selectedClass === 'access-rank') {
+                    el.setAttribute('visibility', isAccess ? 'visible' : 'hidden');
+                } else if (selectedClass === 'needs-rank') {
+                    el.setAttribute('visibility', isNeeds ? 'visible' : 'hidden');
+                } else {
+                    el.setAttribute('visibility', 'hidden');
+                }
+            });
 
-            if (selectedClass === "access-rank") {
-                accessTexts.forEach(text => text.setAttribute("visibility", "visible"));
-                needsTexts.forEach(text => text.setAttribute("visibility", "hidden"));
-                activeButtonId = "access-rank-button";
-            } else if (selectedClass === "needs-rank") {
-                accessTexts.forEach(text => text.setAttribute("visibility", "hidden"));
-                needsTexts.forEach(text => text.setAttribute("visibility", "visible"));
-                activeButtonId = "needs-rank-button";
-            } else {
-                accessTexts.forEach(text => text.setAttribute("visibility", "hidden"));
-                needsTexts.forEach(text => text.setAttribute("visibility", "hidden"));
-            }
-
-            // Set the active tab styling
             setActiveTab(activeButtonId);
-
-            // Swap bwl-logo-nX <=> bwl-logo-aX using forEach to avoid JSX conflicts
             const logoNumbers = [1, 2, 3, 4, 5];
             logoNumbers.forEach(i => {
                 const nodes = document.querySelectorAll(`.bwl-logo-n${i}, .bwl-logo-a${i}`);
@@ -263,8 +253,6 @@ const t = i18n[locale];
         }
 
         setInitialViewBox();
-
-        // Initialize with default active tab (Access Restrictions)
         setActiveTab("access-rank-button");
     }
 </script>

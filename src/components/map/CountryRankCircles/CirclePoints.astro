@@ -24,7 +24,9 @@ import countryCircles from './CountryCircles.json';
 
             return (
                 <g id={`cc_country_${country.id}`}>
-                    <circle cx={country.cx} cy={country.cy} r="10" id={`cc_${country.id}`} />
+                    <circle cx={country.cx} cy={country.cy} r="10" id={`cc_${country.id}`}
+                    class={`${hasAccess ? 'is-access-rank' : ''} ${hasNeeds ? 'is-needs-rank' : ''}`}
+                    />
                     
                     {hasAccess && (
                         <text
@@ -32,8 +34,7 @@ import countryCircles from './CountryCircles.json';
                             y={country.textY + 5}
                             id={`access_${country.id}`}
                             fill="#FFF"
-                            visibility="visible"
-                            class="select-none"
+                            class="select-none is-access-rank"
                         >
                             {data.access_rank}
                         </text>
@@ -45,8 +46,7 @@ import countryCircles from './CountryCircles.json';
                             y={country.textY + 5}
                             id={`needs_${country.id}`}
                             fill="#FFF"
-                            visibility="hidden"
-                            class="select-none"
+                            class="is-needs-rank select-none"
                         >
                             {data.needs_rank}
                         </text>

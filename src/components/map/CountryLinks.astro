@@ -25,6 +25,7 @@ function gatherStats(data, fields) {
 }
 
 function scaleValueToBucket(value, min, max) {
+  if(!value) return 0;
   if (min === max) return 6;
   if (value <= min) return 1;
   if (value >= max) return 8;
