@@ -1,5 +1,4 @@
 ---
-import Search from "~/components/navigation/Search.astro"
 import i18n from '~/components/i18n/index.js';
 import { getLanguageFromPath } from '~/config.js';
 import MainMenu from "./MainMenu.astro";
@@ -18,7 +17,7 @@ const t = i18n[locale]
         <path class="bwl-logo-a2" d="M317 167h-1v35l-1 28a1 1 2 0 1-1 1l-22-2q-26 1-48 7-25 7-43 24l-9 10h-1c-1-27 8-50 31-64q14-8 29-11l28-6q15-4 28-13 5-3 9-9h1Z"/>
         <path class="bwl-logo-a1" d="M194 292q9-15 24-26 25-19 56-18 16 0 33 4l2 1a1 1 0 0 1 0 1l-9 1-26 2a126 126 0 0 0-79 36l-1-1Z"/>
       </svg>
-      Bible Access List</a>
+      {t?.title ?? "Bible Access List"}</a>
     <MainMenu />
   </div>
 </header>
