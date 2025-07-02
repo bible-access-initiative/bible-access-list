@@ -40,17 +40,18 @@ const t = i18n[locale];
         <button
                 id="zoom-in-button"
                 title="Zoom In"
-                class="text-white text-2xl bg-stone-900 dark:bg-stone-950 rounded-lg w-8 h-8">+</button
-        >
+                class="text-white text-2xl bg-stone-900 dark:bg-stone-950 rounded-lg
+               w-8 h-8 md:w-10 md:h-10 lg:w-8 lg:h-8 touch-manipulation">+</button>
         <button
                 id="zoom-out-button"
                 title="Zoom Out"
-                class="text-white text-2xl bg-stone-900 dark:bg-stone-950 rounded-lg w-8 h-8 mt-2">-</button
-        >
+                class="text-white text-2xl bg-stone-900 dark:bg-stone-950 rounded-lg
+               w-8 h-8 md:w-10 md:h-10 lg:w-8 lg:h-8 mt-2 touch-manipulation">-</button>
     </div>
-    <svg
-            id="worldmap"
-            class="w-full h-[75vh] z-0 relative bg-stone-100/80 dark:bg-stone-900 access-rank"
+
+
+    <svg id="worldmap"
+         class="w-full h-[60vh] md:h-[75vh] z-0 relative bg-stone-100/80 dark:bg-stone-900 access-rank"
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
             id="svg2"
@@ -79,9 +80,12 @@ const t = i18n[locale];
         if (!svg) return;
 
         let isPanning = false;
-        let startX = 0,
-            startY = 0;
+        let startX = 0, startY = 0;
         let viewBox = { x: 0, y: 0, width: 800, height: 600 };
+
+        // Detect if device is mobile/tablet
+        const isMobile = window.innerWidth < 768; // md breakpoint
+        const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024; // lg breakpoint
 
         function setInitialViewBox() {
             const svgRect = svg.getBoundingClientRect();
@@ -99,6 +103,17 @@ const t = i18n[locale];
                 viewBoxHeight = contentWidth / containerAspectRatio;
             }
 
+            // Apply responsive zoom scaling
+            let zoomFactor = 1;
+            if (isMobile) {
+                zoomFactor = 0.4; // Start significantly zoomed in on mobile
+            } else if (isTablet) {
+                zoomFactor = 0.7; // Moderately zoomed in on tablet
+            }
+
+            viewBoxWidth *= zoomFactor;
+            viewBoxHeight *= zoomFactor;
+
             viewBox = {
                 x: 83 - (viewBoxWidth - contentWidth) / 2,
                 y: 45 - (viewBoxHeight - contentHeight) / 2,
@@ -106,7 +121,201 @@ const t = i18n[locale];
                 height: viewBoxHeight,
             };
 
+            // Store initial dimensions for zoom limits
+            viewBox.initialWidth = viewBoxWidth;
+            viewBox.initialHeight = viewBoxHeight;
+
             svg.setAttribute("viewBox", `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
+        }
+
+        // Enhanced zoom function with device-specific limits
+        function zoom(scaleFactor, clientX, clientY) {
+            const svgPoint = svg.createSVGPoint();
+            const loc = Object.assign(svgPoint, {
+                x: clientX,
+                y: clientY,
+            }).matrixTransform(svg.getScreenCTM().inverse());
+
+            const newWidth = viewBox.width * scaleFactor;
+            const newHeight = viewBox.height * scaleFactor;
+
+            const initialWidth = viewBox.initialWidth;
+            const zoomRatio = initialWidth / newWidth;
+
+            // Device-specific zoom limits
+            let minZoom, maxZoom;
+            if (isMobile) {
+                minZoom = 0.6; // Restrict zoom out more on mobile (was 0.3)
+                maxZoom = 5.0;
+            } else if (isTablet) {
+                minZoom = 0.7; // Restrict zoom out more on tablet (was 0.5)
+                maxZoom = 4.0;
+            } else {
+                minZoom = 0.9; // Desktop unchanged
+                maxZoom = 3.0;
+            }
+
+            if (zoomRatio >= minZoom && zoomRatio <= maxZoom) {
+                viewBox.x = loc.x - (loc.x - viewBox.x) * scaleFactor;
+                viewBox.y = loc.y - (loc.y - viewBox.y) * scaleFactor;
+                viewBox.width = newWidth;
+                viewBox.height = newHeight;
+                svg.setAttribute("viewBox", `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
+            }
+        }
+
+        // Mobile-specific interaction handling
+        function setupMobileInteractions() {
+            if ('ontouchstart' in window) {
+                // Touch device handling
+                let touchStartTime = 0;
+                let touchStartPos = { x: 0, y: 0 };
+                let touchMoved = false;
+                let panStartX = 0, panStartY = 0;
+                let lastTouchDistance = 0;
+                let isPanningTouch = false;
+
+                // Handle country selection taps
+                svg.addEventListener("touchstart", (e) => {
+                    if (e.touches.length === 1) {
+                        touchStartTime = Date.now();
+                        touchStartPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                        touchMoved = false;
+
+                        // Check if touch started over a country
+                        const target = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+                        const countryLink = target?.closest('a');
+
+                        if (!countryLink) {
+                            // Not over a country, prepare for panning
+                            isPanningTouch = true;
+                            panStartX = e.touches[0].clientX;
+                            panStartY = e.touches[0].clientY;
+                        }
+                    } else if (e.touches.length === 2) {
+                        // Two finger pinch zoom
+                        e.preventDefault();
+                        touchMoved = true;
+                        isPanningTouch = false;
+
+                        const touch1 = e.touches[0];
+                        const touch2 = e.touches[1];
+                        lastTouchDistance = Math.sqrt(
+                            Math.pow(touch2.clientX - touch1.clientX, 2) +
+                            Math.pow(touch2.clientY - touch1.clientY, 2)
+                        );
+                    }
+                }, { passive: false });
+
+                svg.addEventListener("touchmove", (e) => {
+                    if (e.touches.length === 1) {
+                        const touch = e.touches[0];
+                        const deltaX = Math.abs(touch.clientX - touchStartPos.x);
+                        const deltaY = Math.abs(touch.clientY - touchStartPos.y);
+
+                        if (deltaX > 10 || deltaY > 10) {
+                            touchMoved = true;
+
+                            if (isPanningTouch) {
+                                e.preventDefault();
+                                // Pan the map
+                                viewBox.x += panStartX - touch.clientX;
+                                viewBox.y += panStartY - touch.clientY;
+                                svg.setAttribute("viewBox", `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
+                                panStartX = touch.clientX;
+                                panStartY = touch.clientY;
+                            }
+                        }
+                    } else if (e.touches.length === 2) {
+                        // Pinch zoom
+                        e.preventDefault();
+                        const touch1 = e.touches[0];
+                        const touch2 = e.touches[1];
+                        const currentDistance = Math.sqrt(
+                            Math.pow(touch2.clientX - touch1.clientX, 2) +
+                            Math.pow(touch2.clientY - touch1.clientY, 2)
+                        );
+
+                        if (lastTouchDistance > 0) {
+                            const scaleFactor = lastTouchDistance / currentDistance;
+                            const centerX = (touch1.clientX + touch2.clientX) / 2;
+                            const centerY = (touch1.clientY + touch2.clientY) / 2;
+                            zoom(scaleFactor, centerX, centerY);
+                        }
+                        lastTouchDistance = currentDistance;
+                    }
+                }, { passive: false });
+
+                svg.addEventListener("touchend", (e) => {
+                    const touchDuration = Date.now() - touchStartTime;
+
+                    if (e.touches.length === 0) {
+                        isPanningTouch = false;
+                        lastTouchDistance = 0;
+
+                        // Quick tap without movement = country selection
+                        if (!touchMoved && touchDuration < 300 && e.changedTouches.length === 1) {
+                            const touch = e.changedTouches[0];
+                            const target = document.elementFromPoint(touch.clientX, touch.clientY);
+                            const countryLink = target?.closest('a');
+
+                            if (countryLink) {
+                                e.preventDefault();
+                                // Create a synthetic click event for the slideout panel
+                                const syntheticEvent = new MouseEvent('click', {
+                                    bubbles: true,
+                                    cancelable: true,
+                                    clientX: touch.clientX,
+                                    clientY: touch.clientY,
+                                    target: countryLink
+                                });
+
+                                // Manually call the slideout function with the synthetic event
+                                syntheticEvent.target = countryLink;
+                                openSlideoutPanel(syntheticEvent);
+                            }
+                        }
+                    }
+                }, { passive: false });
+            } else {
+                // Desktop - use the original click handler
+                svg.addEventListener("click", openSlideoutPanel);
+            }
+        }
+
+        // Enhanced zoom button behavior for mobile
+        const zoomInFactor = isMobile ? 0.7 : 0.8; // More aggressive zoom on mobile
+        const zoomOutFactor = isMobile ? 1.4 : 1.2;
+
+        document.getElementById("zoom-in-button")?.addEventListener("click", () => {
+            zoom(zoomInFactor, svg.clientWidth / 2, svg.clientHeight / 2);
+        });
+
+        document.getElementById("zoom-out-button")?.addEventListener("click", () => {
+            zoom(zoomOutFactor, svg.clientWidth / 2, svg.clientHeight / 2);
+        });
+
+        // Tooltip handling (desktop only)
+        function showTooltip(event) {
+            // Only show tooltips on non-touch devices
+            if ('ontouchstart' in window) return;
+
+            const target = event.target.closest("a");
+            if (target) {
+                const title = target.getAttribute("title");
+                if (title) {
+                    tooltip.innerText = title;
+                    tooltip.style.display = "block";
+
+                    // Position tooltip relative to mouse
+                    const updateTooltipPosition = (e) => {
+                        tooltip.style.left = `${e.pageX + 10}px`;
+                        tooltip.style.top = `${e.pageY - 24}px`;
+                    };
+
+                    updateTooltipPosition(event);
+                }
+            }
         }
 
         svg.addEventListener("mouseover", showTooltip);
@@ -115,19 +324,7 @@ const t = i18n[locale];
             tooltip.style.display = "none";
         });
 
-        function showTooltip(event) {
-            const target = event.target.closest("a");
-            if (target) {
-                const title = target.getAttribute("title");
-                if (title) {
-                    tooltip.style.left = `${event.clientX + 10}px`;
-                    tooltip.style.top = `${event.clientY + 10}px`;
-                    tooltip.innerText = title;
-                    tooltip.style.display = "block";
-                }
-            }
-        }
-
+        // Mouse events (for desktop)
         svg.addEventListener("mousedown", (e) => {
             isPanning = true;
             startX = e.clientX;
@@ -153,48 +350,7 @@ const t = i18n[locale];
             zoom(scaleFactor, e.clientX, e.clientY);
         });
 
-        function zoom(scaleFactor, clientX, clientY) {
-            const svgPoint = svg.createSVGPoint();
-            const loc = Object.assign(svgPoint, {
-                x: clientX,
-                y: clientY,
-            }).matrixTransform(svg.getScreenCTM().inverse());
-
-            const newWidth = viewBox.width * scaleFactor;
-            const newHeight = viewBox.height * scaleFactor;
-
-            if (!viewBox.initialWidth) {
-                viewBox.initialWidth = viewBox.width;
-                viewBox.initialHeight = viewBox.height;
-            }
-
-            const initialWidth = viewBox.initialWidth;
-            const zoomRatio = initialWidth / newWidth;
-
-            const minZoom = 0.8;
-            const maxZoom = 3.0;
-
-            if (zoomRatio >= minZoom && zoomRatio <= maxZoom) {
-                viewBox.x = loc.x - (loc.x - viewBox.x) * scaleFactor;
-                viewBox.y = loc.y - (loc.y - viewBox.y) * scaleFactor;
-                viewBox.width = newWidth;
-                viewBox.height = newHeight;
-                svg.setAttribute("viewBox", `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
-            }
-        }
-
-        document.getElementById("zoom-in-button")?.addEventListener("click", () => {
-            zoom(0.8, svg.clientWidth / 2, svg.clientHeight / 2);
-        });
-
-        document.getElementById("zoom-out-button")?.addEventListener("click", () => {
-            zoom(1.2, svg.clientWidth / 2, svg.clientHeight / 2);
-        });
-
-        svg.addEventListener("click", openSlideoutPanel);
-        document.getElementById("access-rank-button")?.addEventListener("click", () => toggleMapRankClass("access-rank"));
-        document.getElementById("needs-rank-button")?.addEventListener("click", () => toggleMapRankClass("needs-rank"));
-
+        // Tab functionality
         function setActiveTab(activeButtonId) {
             const allTabs = document.querySelectorAll('.map-tab');
             allTabs.forEach(tab => {
@@ -252,7 +408,20 @@ const t = i18n[locale];
             map.classList.add(selectedClass);
         }
 
+        // Initialize mobile/desktop interactions
+        setupMobileInteractions();
+
+        // Tab button event listeners
+        document.getElementById("access-rank-button")?.addEventListener("click", () => toggleMapRankClass("access-rank"));
+        document.getElementById("needs-rank-button")?.addEventListener("click", () => toggleMapRankClass("needs-rank"));
+
+        // Initialize
         setInitialViewBox();
         setActiveTab("access-rank-button");
+
+        // Re-initialize on resize
+        window.addEventListener('resize', () => {
+            setTimeout(setInitialViewBox, 100);
+        });
     }
 </script>
