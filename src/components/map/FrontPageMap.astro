@@ -145,13 +145,13 @@ const t = i18n[locale];
             // Device-specific zoom limits
             let minZoom, maxZoom;
             if (isMobile) {
-                minZoom = 0.6; // Restrict zoom out more on mobile (was 0.3)
+                minZoom = 0.6;
                 maxZoom = 5.0;
             } else if (isTablet) {
-                minZoom = 0.7; // Restrict zoom out more on tablet (was 0.5)
+                minZoom = 0.8; // Restrict zoom out more on tablet (was 0.5)
                 maxZoom = 4.0;
             } else {
-                minZoom = 0.9; // Desktop unchanged
+                minZoom = 1.2;
                 maxZoom = 3.0;
             }
 
