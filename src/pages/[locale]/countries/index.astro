@@ -8,6 +8,7 @@ import Banner from "~/components/navigation/Banner.astro";
 import i18n from '~/components/i18n/index.js';
 import FuzzyDatatable from "~/components/FuzzyTableWrapper.astro";
 import country_data from "~/data/country_data.json"
+import FrontPageMap from "../../../components/map/FrontPageMap.astro";
 const locale = getLanguageFromPath(Astro.url);
 const t = i18n[locale];
 
@@ -40,19 +41,38 @@ let filters = [
 ---
 <Layout meta={{
     title: t?.countries ?? "Countries",
-    image: {url:`${SITE.domain}/images/banner/banner_countries_ogp.png`},
     description: t?.countries ?? "Filter the countries of the world to narrow your search"
   }}>
 
-  <Banner
-    backgroundImageSizes="(max-width:320px) 320px, (max-width:480px) 480px, (max-width:640px) 640px, (max-width:768px) 768px, (max-width:1024px) 1024px, (max-width:1280px) 1280px, (max-width:1600px) 1600px"
-    backgroundImageSrcSet="/images/banner/banner_countries_320w.avif 320w, /images/banner/banner_countries_480w.avif 480w, /images/banner/banner_countries_640w.avif 640w, /images/banner/banner_countries_768w.avif 768w, /images/banner/banner_countries_1024w.avif 1024w, /images/banner/banner_countries_1280w.avif 1280w, /images/banner/banner_countries_1600w.avif 1600w"
-    backgroundImage="/images/banner/banner_countries.avif"
-    title={t.countries}
-    breadcrumbs={[
-      { title: t?.countries ?? "countries" }
-    ]}
-  />
+
+    <section class="mx-12 lg:mx-16">
+        <div class="text-center py-8 max-w-6xl mx-auto">
+            <div class="md: text-xl pb-4">Ranking where <b>Bible Shortage</b> is Greatest and <b>Bible Access</b> is Most Challenged.</div>
+            <div class="text-xs md:text-base">This Bible Access List is a research initiative identifying where it is most difficult for people to access Bibles and highlights the nations with the most significant shortages. The results are based on expert analysis of 34 data points and insights from consultations with over a thousand national experts.</div>
+        </div>
+    <div class="relative ">
+
+            <span class="relative top-0 left-1/2 transform -translate-x-1/2 inline-flex z-50 text-base ">
+
+                <button id="access-rank-button" type="button" class="map-tab rounded-bl-lg">
+                    Access<span class="hidden ml-1 md:block">Restrictions</span>
+                </button>
+
+                <button id="needs-rank-button" type="button" class="map-tab">
+                     <span class="hidden mr-1 md:block">Estimated</span>Shortage
+                </button>
+
+                <a href={`/${locale}/countries`} class="map-tab rounded-br-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="-ml-0.5 mr-1 size-4">
+                        <path
+                                d="M2 4a2 2 0 0 1 2-2h8a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2ZM2 9.25a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 9.25ZM2.75 12.5a.75.75 0 0 0 0 1.5h10.5a.75.75 0 0 0 0-1.5H2.75Z"
+                        ></path>
+                    </svg>
+                    List<span class="hidden ml-1 md:block">View</span>
+                </a>
+            </span>
+
+
 
 <FuzzyDatatable data={countries} {t} {locale}
   head={[
@@ -66,22 +86,26 @@ let filters = [
     {id: "religion_main", name: t?.todo ?? "religion" },
 ]} />
 
-<table class="w-full lite-table">
-  <thead>
-      <th>{t?.title ?? "Title"}</th>
-      <th>{t?.population ?? "Population"}</th>
-      <th>{t?.region ?? "Region"}</th>
-      <th>{t?.languages ?? "Languages"}</th>
-  </thead>
-  <tbody>
-      {countries?.map(country => (<tr>
-            <td>{country.country}</td>
-            <td>{country.access_rank} | {country.access_desc}</td>
-            <td>{country.needs_rank} | {country.needs_range_desc}</td>
-            <td>{country.ownership_range}</td>
-        </tr>))}
-  </tbody>
-</table>
 
+
+        <table class="w-full lite-table">
+          <thead>
+              <th>{t?.title ?? "Title"}</th>
+              <th>{t?.population ?? "Population"}</th>
+              <th>{t?.region ?? "Region"}</th>
+              <th>{t?.languages ?? "Languages"}</th>
+          </thead>
+          <tbody>
+              {countries?.map(country => (<tr>
+                    <td>{country.country}</td>
+                    <td>{country.access_rank} | {country.access_desc}</td>
+                    <td>{country.needs_rank} | {country.needs_range_desc}</td>
+                    <td>{country.ownership_range}</td>
+                </tr>))}
+          </tbody>
+        </table>
+
+        </div>
+    </section>
 </Layout>
 

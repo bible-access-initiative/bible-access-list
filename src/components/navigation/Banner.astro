@@ -38,9 +38,7 @@ transition:animate={fade({ duration: '.5s' })}>
 		sizes={backgroundImageSizes}
 		src={ backgroundImage } width="1800" height="360" class="object-cover h-full w-full inset-0 absolute z-10 dark:inver" alt="" /> : ''}
 
-	<div style={`background:${colorPrimary};background: linear-gradient(to bottom right, ${colorPrimary}, ${colorSecondary});`} 
-	class={`absolute inset-0 w-full h-full overflow-hidden opacity-80 z-20` + (colorPrimary ? '' : ` bg-gradient-to-r from-red-500 via-amber-800 
-	to-amber-500 dark:from-red-800 dark:via-red-900 dark:to-amber-800`) }></div>
+
 
 	{(tabs) ? 
 	<nav class="flex flex-row justify-center w-1/2 lg:w-1/3  mx-auto rounded-tl-lg rounded-tr-lg z-30 relative rounded-lg shadow">
