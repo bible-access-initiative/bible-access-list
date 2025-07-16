@@ -24,13 +24,11 @@ const { class: className = "", id = "DarkModeToggle" } = Astro.props;
 
     <span class="sr-only">Toggle dark mode</span>
 
-    <!-- Toggle Circle/Slider - Pure Tailwind Animation -->
     <span
             id={`${id}Space`}
             class="pointer-events-none relative inline-block h-6 w-6 transform rounded-full shadow ring-0
                transition-transform duration-200 ease-in-out translate-x-0 dark:translate-x-4 bg-white dark:bg-stone-900">
 
-        <!-- Moon Icon (Dark Mode) -->
         <span
                 id={`${id}MoonWrap`}
                 aria-hidden="true"
@@ -41,7 +39,6 @@ const { class: className = "", id = "DarkModeToggle" } = Astro.props;
             </svg>
         </span>
 
-        <!-- Sun Icon (Light Mode) - Yellow -->
         <span
                 id={`${id}SunWrap`}
                 aria-hidden="true"
@@ -58,109 +55,3 @@ const { class: className = "", id = "DarkModeToggle" } = Astro.props;
         </span>
     </span>
 </button>
-
-<script is:inline>
-    // Dark mode toggle functionality for Astro (client-side only)
-    (function() {
-        const STORAGE_KEY = 'theme-preference';
-
-        // Get theme preference
-        function getColorPreference() {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            if (stored) {
-                return stored;
-            }
-            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
-
-        // Apply theme to document
-        function reflectPreference(theme) {
-            // Apply theme class to html element
-            if (theme === 'dark') {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-
-            // Update button aria-label
-            const buttons = document.querySelectorAll('[data-aw-toggle-color-scheme]');
-            buttons.forEach(button => {
-                button.setAttribute('aria-label',
-                    theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'
-                );
-                button.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
-            });
-        }
-
-        // Save preference and apply
-        function setPreference(theme) {
-            localStorage.setItem(STORAGE_KEY, theme);
-            reflectPreference(theme);
-        }
-
-        // Toggle theme
-        function toggleTheme() {
-            const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            setPreference(newTheme);
-        }
-
-        // Initialize theme on page load
-        function initializeTheme() {
-            const theme = getColorPreference();
-            reflectPreference(theme);
-        }
-
-        // Set initial theme immediately to prevent flash
-        initializeTheme();
-
-        // Setup event listeners when DOM is ready
-        function setupEventListeners() {
-            const awButtons = document.querySelectorAll('[data-aw-toggle-color-scheme]');
-            awButtons.forEach(button => {
-                // Remove any existing listeners to prevent duplicates
-                button.removeEventListener('click', toggleTheme);
-                // Add the listener
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleTheme();
-                });
-            });
-        }
-
-        // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', setupEventListeners);
-        } else {
-            setupEventListeners();
-        }
-
-        // Listen for system theme changes
-        window.matchMedia('(prefers-color-scheme: dark)')
-            .addEventListener('change', ({ matches: isDark }) => {
-                // Only update if user hasn't manually set a preference
-                if (!localStorage.getItem(STORAGE_KEY)) {
-                    const theme = isDark ? 'dark' : 'light';
-                    reflectPreference(theme);
-                }
-            });
-
-        // Re-initialize on page navigation (for SPAs)
-        document.addEventListener('astro:page-load', function() {
-            initializeTheme();
-            setupEventListeners();
-        });
-    })();
-</script>
-
-<style>
-/* Set initial theme before page load to prevent flash */
-:root {
-    color-scheme: light;
-    }
-
-.dark {
-    color-scheme: dark;
-    }
-</style>
