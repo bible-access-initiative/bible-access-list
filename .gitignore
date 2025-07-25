@@ -25,6 +25,7 @@ pnpm-debug.log*
 public/images/bible-project
 public/images/covers
 public/data/search.bin
+src/data/bal.json
 src/data/country_data.json
 *.iml
 .idea/material_theme_project_new.xml
