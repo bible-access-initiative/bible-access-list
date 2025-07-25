@@ -7,8 +7,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "fetch": "node ./build_scripts/fetch-data.mjs",
-    "build": "node ./build_scripts/fetch-data.mjs && astro build",
+    "fetch": "node ./build_scripts/fetch-data.mjs && node ./build_scripts/fetch-wikidata.mjs",
+    "build": "node ./build_scripts/fetch-data.mjs && node ./build_scripts/fetch-wikidata.mjs && astro build",
     "build-test": "astro build  --experimental-static-build",
     "preview": "astro preview",
     "astro": "astro"
@@ -17,6 +17,8 @@
     "@astrojs/rss": "^4.0.11",
     "@astrojs/sitemap": "^3.2.1",
     "@astrojs/tailwind": "^6.0.0",
+    "@fontsource/cormorant": "^5.2.6",
+    "@fontsource/merriweather": "^5.2.9",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/line-clamp": "^0.4.4",
@@ -41,7 +43,8 @@
     "postcss-import": "^15.1.0",
     "protobufjs": "^7.4.0",
     "svg-toolbelt": "^0.7.0",
-    "tailwindcss": "^3.4.10"
+    "tailwindcss": "^3.4.10",
+    "astro-worldmap-choropleth": "../../Projects/dbs/worldmap"
   },
   "devDependencies": {
     "@biomejs/biome": "1.1.2",

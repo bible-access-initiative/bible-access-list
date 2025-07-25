@@ -4,20 +4,14 @@ export function getStaticPaths() {return LocalePath();}
 
 import Layout from "~/layouts/PageLayout.astro";
 import { SITE, getLanguageFromPath } from "~/config.js";
-import Banner from "~/components/navigation/Banner.astro";
 import i18n from '~/components/i18n/index.js';
 import FuzzyDatatable from "~/components/FuzzyTableWrapper.astro";
 import country_data from "~/data/country_data.json"
-import FrontPageMap from "../../../components/map/FrontPageMap.astro";
+
 const locale = getLanguageFromPath(Astro.url);
 const t = i18n[locale];
-
-const countries = Object.entries(country_data).map(([id, data]) => ({
-  id,
-  ...data
-}));
-
-let filters = [
+const countries = Object.entries(country_data).map(([id, data]) => ({id, ...data}));
+const filters = [
   {
     name: t?.type ?? "Type", filterType: 'radio', filterColumn: "id", options: [
       {title: t?.continents?.All ?? 'All', value: /.+/, selected: true},
@@ -37,56 +31,43 @@ let filters = [
     ]
   }
 ]
-
 ---
-<Layout meta={{
-    title: t?.countries ?? "Countries",
-    description: t?.countries ?? "Filter the countries of the world to narrow your search"
-  }}>
+<Layout meta={{title: t?.countries ?? "Countries", description: t?.countries ?? "Filter the countries of the world to narrow your search"}}>
 
+<section class="mx-12 lg:mx-16">
 
-    <section class="mx-12 lg:mx-16">
-        <div class="text-center py-8 max-w-6xl mx-auto">
-            <div class="md: text-xl pb-4">Ranking where <b>Bible Shortage</b> is Greatest and <b>Bible Access</b> is Most Challenged.</div>
-            <div class="text-xs md:text-base">This Bible Access List is a research initiative identifying where it is most difficult for people to access Bibles and highlights the nations with the most significant shortages. The results are based on expert analysis of 34 data points and insights from consultations with over a thousand national experts.</div>
-        </div>
+  <div class="text-center py-8 max-w-6xl mx-auto">
+    <div class="md: text-xl pb-4">Ranking where <b>Bible Shortage</b> is Greatest and <b>Bible Access</b> is Most Challenged.</div>
+    <div class="text-xs md:text-base">This Bible Access List is a research initiative identifying where it is most difficult for people to access Bibles and highlights the nations with the most significant shortages. The results are based on expert analysis of 34 data points and insights from consultations with over a thousand national experts.</div>
+  </div>
+
     <div class="relative ">
 
-            <span class="relative top-0 left-1/2 transform -translate-x-1/2 inline-flex z-50 text-base ">
-
-                <button id="access-rank-button" type="button" class="map-tab rounded-bl-lg">
-                    Access<span class="hidden ml-1 md:block">Restrictions</span>
-                </button>
-
-                <button id="needs-rank-button" type="button" class="map-tab">
-                     <span class="hidden mr-1 md:block">Estimated</span>Shortage
-                </button>
-
-                <a href={`/${locale}/countries`} class="map-tab rounded-br-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="-ml-0.5 mr-1 size-4">
-                        <path
-                                d="M2 4a2 2 0 0 1 2-2h8a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2ZM2 9.25a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 9.25ZM2.75 12.5a.75.75 0 0 0 0 1.5h10.5a.75.75 0 0 0 0-1.5H2.75Z"
-                        ></path>
-                    </svg>
-                    List<span class="hidden ml-1 md:block">View</span>
+            <span class="relative top-0 left-1/2 transform -translate-x-1/2 inline-flex z-50 text-base">
+              <a href={`/${locale}/`} id="access-rank-button" type="button" class="map-tab rounded-bl-lg">
+                {t?.access ?? "Access"}<span class="hidden ml-1 md:block">{t?.restrictions ?? "Restrictions"}</span>
+              </a>
+        
+            <a href={`/${locale}/`} id="needs-rank-button" type="button" class="map-tab">
+                {t?.estimated ?? "Estimated"}<span class="hidden ml-1 md:block">{t?.shortage ?? "Shortage"}
                 </a>
+        
+            <a href="#" class="map-tab rounded-br-lg">
+                {t?.list ?? "List"}
+            </a>
             </span>
 
-
-
-<FuzzyDatatable data={countries} {t} {locale}
+<FuzzyDatatable data={countries} {t} {locale} {filters}
   head={[
-    {id: "country", name: t?.todo ?? "country", subtitle: "region" },
-    {id: "access_rank", name: t?.todo ?? "access rank", type: "int", subtitle: "access_desc" },
-    {id: "needs_rank", name: t?.todo ?? "need rank", subtitle: "needs_range_desc" },
-    {id: "ownership_range", name: t?.todo ?? "ownership", subtitle: "ownership_desc" },
-    {id: "pop_total", name: t?.todo ?? "population total" },
-    {id: "pop_christian", name: t?.todo ?? "christian population", subtitle: "pct_christian"},
-    {id: "church_growth", name: t?.todo ?? "church growth" },
-    {id: "religion_main", name: t?.todo ?? "religion" },
+    {id: "country", name: t?.country ?? "country", subtitle: "region", link: (row) => `/${locale}/countries/${row.id}` },
+    {id: "access_rank", name: t?.access_rank ?? "access rank", type: "int", subtitle: "access_desc" },
+    {id: "needs_rank", name: t?.needs_rank ?? "need rank", subtitle: "needs_range_desc" },
+    {id: "ownership_range", name: t?.ownership_range ?? "ownership", subtitle: "ownership_desc" },
+    {id: "pop_total", name: t?.pop_total ?? "population total" },
+    {id: "pop_christian", name: t?.pop_christian ?? "christian population", subtitle: "pct_christian"},
+    {id: "church_growth", name: t?.church_growth ?? "church growth" },
+    {id: "religion_main", name: t?.religion_main ?? "religion" },
 ]} />
-
-
 
         <table class="w-full lite-table">
           <thead>
@@ -97,7 +78,7 @@ let filters = [
           </thead>
           <tbody>
               {countries?.map(country => (<tr>
-                    <td>{country.country}</td>
+                    <td><a href={`/${locale}/countries/${country.id}`} class="text-red-700 dark:text-red-400 hover:underline">{country.country}</a></td>
                     <td>{country.access_rank} | {country.access_desc}</td>
                     <td>{country.needs_rank} | {country.needs_range_desc}</td>
                     <td>{country.ownership_range}</td>
@@ -106,6 +87,5 @@ let filters = [
         </table>
 
         </div>
-    </section>
+</section>
 </Layout>
-

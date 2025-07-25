@@ -2,26 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+path                     {fill: #ccc;text-shadow: 3px 2px 4px rgba(0,0,0,0.50)}
+
+[data-current-view="access"] a[data-access_rank="8"] path,
 .access-rank a[data-bwl-access="8"] path  {fill: #fbf1d2;stroke: #eed191;stroke-width: 2px}
+[data-current-view="access"] a[data-access_rank="7"] path,
 .access-rank a[data-bwl-access="7"] path  {fill: #f2da9c;stroke: #f9c274;stroke-width: 2px}
+[data-current-view="access"] a[data-access_rank="6"] path,
 .access-rank a[data-bwl-access="6"] path  {fill: #f4bc7a;stroke: #f8a673;stroke-width: 2px}
+[data-current-view="access"] a[data-access_rank="5"] path,
 .access-rank a[data-bwl-access="5"] path  {fill:#fd8d3c;stroke:#fc4e2a;stroke-width: 2px}
+[data-current-view="access"] a[data-access_rank="4"] path,
 .access-rank a[data-bwl-access="4"] path  {fill:#fc4e2a;stroke:#e31a1c;stroke-width: 2px}
+[data-current-view="access"] a[data-access_rank="3"] path,
 .access-rank a[data-bwl-access="3"] path  {fill:#e31a1c;stroke:#bd0026;stroke-width: 2px}
+[data-current-view="access"] a[data-access_rank="2"] path,
 .access-rank a[data-bwl-access="2"] path  {fill:#bd0026;stroke:#800026;stroke-width: 2px}
+[data-current-view="access"] a[data-access_rank="1"] path,
 .access-rank a[data-bwl-access="1"] path  {fill:#800026;stroke:#67000D;stroke-width: 2px}
 
+[data-current-view="needs"] a[data-needs_rank="1"] path,
 .needs-rank a[data-bwl-needs="1"] path    {fill:#004d40;stroke:#c7e9b4;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="2"] path,
 .needs-rank a[data-bwl-needs="2"] path    {fill:#00675b;stroke:#c7e9b4;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="3"] path,
 .needs-rank a[data-bwl-needs="3"] path    {fill:#00806d;stroke:#c7e9b4;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="4"] path,
 .needs-rank a[data-bwl-needs="4"] path    {fill:#229e82;stroke:#7fcdbb;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="5"] path,
 .needs-rank a[data-bwl-needs="5"] path    {fill:#3fbf9c;stroke:#41b6c4;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="6"] path,
 .needs-rank a[data-bwl-needs="6"] path    {fill:#66d1ad;stroke:#c9c6b7;;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="7"] path,
 .needs-rank a[data-bwl-needs="7"] path    {fill:#8ce3bf;stroke:#c9c6b7;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="8"] path,
 .needs-rank a[data-bwl-needs="8"] path    {fill:#b4f0d4;stroke:#c9c6b7;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="9"] path,
 .needs-rank a[data-bwl-needs="9"] path    {fill:#d2f8e6;stroke:#c9c6b7;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="10"] path,
 .needs-rank a[data-bwl-needs="10"] path   {fill:#e6fcf0;stroke:#c9c6b7;stroke-width: 2px}
-path text                                 {text-shadow: 3px 2px 4px rgba(0,0,0,0.50)}
+
 
 .bwl-logo-a5 {fill:#fd8d3c;}
 .bwl-logo-a4 {fill:#fc4e2a;}

@@ -4,7 +4,8 @@ require("dotenv").config();
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './src/**/*.{html,js,ts,astro}'
+    './src/**/*.{html,js,ts,astro}',
+    './node_modules/**/*.{html,js,ts,astro}'
   ],
   darkMode: "class",
   plugins: [

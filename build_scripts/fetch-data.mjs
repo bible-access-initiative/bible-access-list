@@ -193,7 +193,7 @@ const remapped = rows
         if (typeof value === 'string') {
           value = value.trim();
           if (['n/a', '0', 'No Icon', 'not scored'].includes(value)) {
-            value = null;
+            value = 0;
           }
         }
         mapped[shortKey] = value;

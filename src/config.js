@@ -9,7 +9,8 @@ export const currentScope = (scope) => {
       apiLiveUrl: "https://arc.dbs.org/api",
       locales: {
         en: "English",
-        es: "Español"
+        es: "Español",
+        zh: "中国人"
       },
     }
   };
