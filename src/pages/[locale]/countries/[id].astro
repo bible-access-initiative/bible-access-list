@@ -1,14 +1,15 @@
 ---
 import { LocalePath } from '~/utils/StaticPathHelper';
 import Layout from "~/layouts/PageLayout.astro";
+import MarkDownAside from "~/components/navigation/MarkdownAside.astro"
 import { SITE, getLanguageFromPath } from "~/config.js";
 import i18n from '~/components/i18n/index.js';
 import balData from "~/data/bal.json";
+import { getCollection, render } from 'astro:content';
 
 export function getStaticPaths() {
   const paths = [];
   const locales = LocalePath();
-  
   Object.keys(balData).forEach(countryId => {
     locales.forEach(({ params }) => {
       paths.push({
@@ -16,7 +17,6 @@ export function getStaticPaths() {
       });
     });
   });
-  
   return paths;
 }
 
@@ -25,311 +25,18 @@ const locale = getLanguageFromPath(Astro.url);
 const t = i18n[locale];
 const country = balData[id];
 
-if (!country) {
-  return Astro.redirect(`/${locale}/countries`);
-}
+const CountriesCollection = await getCollection("countries", ({ id }) => id.includes(id))
+const currentPage = CountriesCollection[0]
 
-// Format numbers
-const formatNumber = (num) => {
-  if (!num) return 'N/A';
-  if (typeof num === 'string') return num;
-  return new Intl.NumberFormat('en-US').format(num);
-};
-
-// Format percentage
-const formatPercent = (val) => {
-  if (!val) return 'N/A';
-  return val;
-};
+const { Content, headings } = await render(currentPage);
 ---
 
 <Layout meta={{title: country.country, description: `Bible access and shortage data for ${country.country}`}}>
-  <section class="mx-6 lg:mx-12 py-8">
-    <!-- Header with country name and region -->
-    <div class="mb-8">
-      <h1 class="text-4xl font-bold mb-2">{country.country}</h1>
-      <p class="text-lg text-stone-600 dark:text-stone-400">{country.region}</p>
-    </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- Main content - Access and Needs data -->
-      <div class="lg:col-span-2 space-y-8">
-        
-        <!-- Access Restrictions -->
-        <div class="bg-stone-50 dark:bg-stone-700 rounded-lg p-6">
-          <h2 class="text-2xl font-semibold mb-4 text-red-600 dark:text-red-400">Access Restrictions</h2>
-          
-          <div class="grid grid-cols-2 gap-6">
-            <div>
-              <p class="text-sm text-stone-600 dark:text-stone-400 uppercase tracking-wide">Access Rank</p>
-              <p class="text-3xl font-bold">#{country.access_rank}</p>
-              <p class="text-sm text-stone-600 dark:text-stone-400 mt-1">{country.access_desc}</p>
-            </div>
-            
-            <div>
-              <p class="text-sm text-stone-600 dark:text-stone-400 uppercase tracking-wide">Total Access Points</p>
-              <p class="text-2xl font-semibold">{country.access_points_total}</p>
-            </div>
-          </div>
-
-          <div class="mt-6 space-y-4">
-            <div>
-              <p class="text-sm font-medium">Block 1 Access Points</p>
-              <div class="flex items-center gap-3">
-                <span class="text-xl font-semibold">{country.block1_total}</span>
-                <span class="text-sm text-stone-600 dark:text-stone-400">{country.block1_desc}</span>
-              </div>
-            </div>
-            
-            <div>
-              <p class="text-sm font-medium">Block 2 Other Limiting Points</p>
-              <div class="flex items-center gap-3">
-                <span class="text-xl font-semibold">{country.block2_total}</span>
-                <span class="text-sm text-stone-600 dark:text-stone-400">{country.block2_desc}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bible Shortage & Needs -->
-        <div class="bg-stone-50 dark:bg-stone-700 rounded-lg p-6">
-          <h2 class="text-2xl font-semibold mb-4 text-orange-600 dark:text-orange-400">Bible Shortage & Needs</h2>
-          
-          <div class="grid grid-cols-2 gap-6">
-            <div>
-              <p class="text-sm text-stone-600 dark:text-stone-400 uppercase tracking-wide">Needs Rank</p>
-              <p class="text-3xl font-bold">#{country.needs_rank}</p>
-              <p class="text-sm text-stone-600 dark:text-stone-400 mt-1">{country.needs_range_desc}</p>
-            </div>
-            
-            <div>
-              <p class="text-sm text-stone-600 dark:text-stone-400 uppercase tracking-wide">Needs Count</p>
-              <p class="text-2xl font-semibold">{formatNumber(country.needs_count)}</p>
-            </div>
-          </div>
-
-          <div class="mt-6">
-            <p class="text-sm font-medium mb-2">Bible Ownership</p>
-            <p class="text-xl font-semibold">{country.ownership_range}</p>
-            <p class="text-sm text-stone-600 dark:text-stone-400">{country.ownership_desc}</p>
-          </div>
-        </div>
-
-        <!-- Access Barriers Icons -->
-        {(country.icon_import || country.icon_print || country.icon_store || country.icon_own || country.icon_distribute) && (
-          <div class="bg-stone-50 dark:bg-stone-700 rounded-lg p-6">
-            <h3 class="text-xl font-semibold mb-4">Access Barriers</h3>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {country.icon_import && (
-                <div class="text-center p-3 bg-red-100 dark:bg-red-900/30 rounded">
-                  <p class="text-sm font-medium">Import</p>
-                  <p class="text-xs text-stone-600 dark:text-stone-400">{country.icon_import}</p>
-                </div>
-              )}
-              {country.icon_print && (
-                <div class="text-center p-3 bg-red-100 dark:bg-red-900/30 rounded">
-                  <p class="text-sm font-medium">Print</p>
-                  <p class="text-xs text-stone-600 dark:text-stone-400">{country.icon_print}</p>
-                </div>
-              )}
-              {country.icon_store && (
-                <div class="text-center p-3 bg-red-100 dark:bg-red-900/30 rounded">
-                  <p class="text-sm font-medium">Store</p>
-                  <p class="text-xs text-stone-600 dark:text-stone-400">{country.icon_store}</p>
-                </div>
-              )}
-              {country.icon_own && (
-                <div class="text-center p-3 bg-red-100 dark:bg-red-900/30 rounded">
-                  <p class="text-sm font-medium">Own</p>
-                  <p class="text-xs text-stone-600 dark:text-stone-400">{country.icon_own}</p>
-                </div>
-              )}
-              {country.icon_distribute && (
-                <div class="text-center p-3 bg-red-100 dark:bg-red-900/30 rounded">
-                  <p class="text-sm font-medium">Distribute</p>
-                  <p class="text-xs text-stone-600 dark:text-stone-400">{country.icon_distribute}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        <!-- Infrastructure Challenges -->
-        {(country.icon_poverty || country.icon_internet || country.icon_logistics || country.icon_electricity || country.icon_literacy) && (
-          <div class="bg-stone-50 dark:bg-stone-700 rounded-lg p-6">
-            <h3 class="text-xl font-semibold mb-4">Infrastructure Challenges</h3>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {country.icon_poverty && (
-                <div class="text-center p-3 bg-orange-100 dark:bg-orange-900/30 rounded">
-                  <p class="text-sm font-medium">Poverty</p>
-                  <p class="text-xs text-stone-600 dark:text-stone-400">{country.icon_poverty}</p>
-                </div>
-              )}
-              {country.icon_internet && (
-                <div class="text-center p-3 bg-orange-100 dark:bg-orange-900/30 rounded">
-                  <p class="text-sm font-medium">Internet</p>
-                  <p class="text-xs text-stone-600 dark:text-stone-400">{country.icon_internet}</p>
-                </div>
-              )}
-              {country.icon_logistics && (
-                <div class="text-center p-3 bg-orange-100 dark:bg-orange-900/30 rounded">
-                  <p class="text-sm font-medium">Logistics</p>
-                  <p class="text-xs text-stone-600 dark:text-stone-400">{country.icon_logistics}</p>
-                </div>
-              )}
-              {country.icon_electricity && (
-                <div class="text-center p-3 bg-orange-100 dark:bg-orange-900/30 rounded">
-                  <p class="text-sm font-medium">Electricity</p>
-                  <p class="text-xs text-stone-600 dark:text-stone-400">{country.icon_electricity}</p>
-                </div>
-              )}
-              {country.icon_literacy && (
-                <div class="text-center p-3 bg-orange-100 dark:bg-orange-900/30 rounded">
-                  <p class="text-sm font-medium">Literacy</p>
-                  <p class="text-xs text-stone-600 dark:text-stone-400">{country.icon_literacy}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-
-      <!-- Aside - Accessory data -->
-      <aside class="lg:col-span-1 space-y-6">
-        
-        <!-- Country Info from Wikidata -->
-        <div class="bg-stone-100 dark:bg-stone-700 rounded-lg p-4">
-          <h3 class="text-lg font-semibold mb-3">Country Information</h3>
-          
-          {country.flag_image && (
-            <img src={country.flag_image} alt={`Flag of ${country.country}`} class="w-full h-32 object-contain mb-4" />
-          )}
-          
-          <dl class="space-y-2">
-            {country.capital && (
-              <div>
-                <dt class="text-sm text-stone-600 dark:text-stone-400">Capital</dt>
-                <dd class="font-medium">{country.capital}</dd>
-              </div>
-            )}
-            
-            {country.area_km2 && (
-              <div>
-                <dt class="text-sm text-stone-600 dark:text-stone-400">Area</dt>
-                <dd class="font-medium">{formatNumber(country.area_km2)} km²</dd>
-              </div>
-            )}
-            
-            {country.gdp_nominal && (
-              <div>
-                <dt class="text-sm text-stone-600 dark:text-stone-400">GDP (Nominal)</dt>
-                <dd class="font-medium">${formatNumber(Math.round(country.gdp_nominal / 1000000))}M</dd>
-              </div>
-            )}
-            
-            {country.hdi && (
-              <div>
-                <dt class="text-sm text-stone-600 dark:text-stone-400">HDI</dt>
-                <dd class="font-medium">{country.hdi.toFixed(3)}</dd>
-              </div>
-            )}
-          </dl>
-        </div>
-
-        <!-- Population & Religion -->
-        <div class="bg-stone-100 dark:bg-stone-700 rounded-lg p-4">
-          <h3 class="text-lg font-semibold mb-3">Demographics</h3>
-          
-          <dl class="space-y-2">
-            <div>
-              <dt class="text-sm text-stone-600 dark:text-stone-400">Total Population</dt>
-              <dd class="font-medium">{country.pop_total}</dd>
-            </div>
-            
-            <div>
-              <dt class="text-sm text-stone-600 dark:text-stone-400">Christian Population</dt>
-              <dd class="font-medium">{country.pop_christian} ({country.pct_christian})</dd>
-            </div>
-            
-            <div>
-              <dt class="text-sm text-stone-600 dark:text-stone-400">Main Religion</dt>
-              <dd class="font-medium">{country.religion_main}</dd>
-            </div>
-            
-            {country.church_growth && (
-              <div>
-                <dt class="text-sm text-stone-600 dark:text-stone-400">Church Growth</dt>
-                <dd class="font-medium">{country.church_growth}</dd>
-              </div>
-            )}
-          </dl>
-        </div>
-
-        <!-- Language Info -->
-        <div class="bg-stone-100 dark:bg-stone-700 rounded-lg p-4">
-          <h3 class="text-lg font-semibold mb-3">Bible Translation Status</h3>
-          
-          <dl class="space-y-2">
-            <div>
-              <dt class="text-sm text-stone-600 dark:text-stone-400">Total Languages</dt>
-              <dd class="font-medium">{country.lang_total}</dd>
-            </div>
-            
-            <div>
-              <dt class="text-sm text-stone-600 dark:text-stone-400">Full Bible</dt>
-              <dd class="font-medium">{country.lang_full_bible}</dd>
-            </div>
-            
-            <div>
-              <dt class="text-sm text-stone-600 dark:text-stone-400">New Testament</dt>
-              <dd class="font-medium">{country.lang_nt}</dd>
-            </div>
-            
-            <div>
-              <dt class="text-sm text-stone-600 dark:text-stone-400">Portions</dt>
-              <dd class="font-medium">{country.lang_portion}</dd>
-            </div>
-            
-            <div>
-              <dt class="text-sm text-stone-600 dark:text-stone-400">No Translation</dt>
-              <dd class="font-medium">{country.lang_none}</dd>
-            </div>
-          </dl>
-        </div>
-
-        <!-- Persecution Info -->
-        {country.wwl_2025_rank && (
-          <div class="bg-stone-100 dark:bg-stone-700 rounded-lg p-4">
-            <h3 class="text-lg font-semibold mb-3">Persecution</h3>
-            
-            <dl class="space-y-2">
-              <div>
-                <dt class="text-sm text-stone-600 dark:text-stone-400">WWL 2025 Rank</dt>
-                <dd class="font-medium">#{country.wwl_2025_rank}</dd>
-              </div>
-            </dl>
-          </div>
-        )}
-
-        <!-- Official Languages -->
-        {country.official_languages && country.official_languages.length > 0 && (
-          <div class="bg-stone-100 dark:bg-stone-700 rounded-lg p-4">
-            <h3 class="text-lg font-semibold mb-3">Official Languages</h3>
-            <ul class="text-sm space-y-1">
-              {country.official_languages.map(lang => (
-                <li>{lang}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </aside>
-    </div>
-
-    <!-- Back to countries link -->
-    <div class="mt-8">
-      <a href={`/${locale}/countries`} class="text-blue-600 dark:text-blue-400 hover:underline">
-        ← Back to all countries
-      </a>
-    </div>
-  </section>
+<div class="grid grid-cols-4 mx-auto pt-12 max-w-7xl">
+    <MarkDownAside {headings} />
+<div class="col-span-3 prose !max-w-none dark:prose-invert">
+  <Content />
+</div>
+</div>
 </Layout>

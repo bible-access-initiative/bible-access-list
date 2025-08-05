@@ -37,8 +37,8 @@ const filters = [
 <section class="mx-12 lg:mx-16">
 
   <div class="text-center py-8 max-w-6xl mx-auto">
-    <div class="md: text-xl pb-4">Ranking where <b>Bible Shortage</b> is Greatest and <b>Bible Access</b> is Most Challenged.</div>
-    <div class="text-xs md:text-base">This Bible Access List is a research initiative identifying where it is most difficult for people to access Bibles and highlights the nations with the most significant shortages. The results are based on expert analysis of 34 data points and insights from consultations with over a thousand national experts.</div>
+    <div class="md: text-xl pb-4" set:html={t?.ranking_description ?? 'Ranking where <b>Bible Shortage</b> is Greatest and <b>Bible Access</b> is Most Challenged.'}></div>
+    <div class="text-xs md:text-base">{t?.bal_description ?? 'This Bible Access List is a research initiative identifying where it is most difficult for people to access Bibles and highlights the nations with the most significant shortages. The results are based on expert analysis of 34 data points and insights from consultations with over a thousand national experts.'}</div>
   </div>
 
     <div class="relative ">

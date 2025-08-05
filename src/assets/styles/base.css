@@ -42,6 +42,25 @@ path                     {fill: #ccc;text-shadow: 3px 2px 4px rgba(0,0,0,0.50)}
 [data-current-view="needs"] a[data-needs_rank="10"] path,
 .needs-rank a[data-bwl-needs="10"] path   {fill:#e6fcf0;stroke:#c9c6b7;stroke-width: 2px}
 
+#map-legend[data-current-view="needs"] [data-value="1"]   {background-color:#004d40;border: solid 2px #c7e9b4}
+#map-legend[data-current-view="needs"] [data-value="2"]   {background-color:#00675b;border: solid 2px #c7e9b4}
+#map-legend[data-current-view="needs"] [data-value="3"]   {background-color:#00806d;border: solid 2px #c7e9b4}
+#map-legend[data-current-view="needs"] [data-value="4"]   {background-color:#229e82;border: solid 2px #7fcdbb}
+#map-legend[data-current-view="needs"] [data-value="5"]   {background-color:#3fbf9c;border: solid 2px #41b6c4}
+#map-legend[data-current-view="needs"] [data-value="6"]   {background-color:#66d1ad;border: solid 2px #c9c6b7}
+#map-legend[data-current-view="needs"] [data-value="7"]   {background-color:#8ce3bf;border: solid 2px #c9c6b7}
+#map-legend[data-current-view="needs"] [data-value="8"]   {background-color:#b4f0d4;border: solid 2px #c9c6b7}
+#map-legend[data-current-view="needs"] [data-value="9"]   {background-color:#d2f8e6;border: solid 2px #c9c6b7}
+#map-legend[data-current-view="needs"] [data-value="10"]   {background-color:#e6fcf0;border: solid 2px #c9c6b7}
+
+#map-legend[data-current-view="access"] [data-value="8"] {background: #fbf1d2;border: #eed191 2px solid;}
+#map-legend[data-current-view="access"] [data-value="7"] {background: #f2da9c;border: #f9c274 2px solid;}
+#map-legend[data-current-view="access"] [data-value="6"] {background: #f4bc7a;border: #f8a673 2px solid;}
+#map-legend[data-current-view="access"] [data-value="5"] {background:#fd8d3c;border:#fc4e2a 2px solid;}
+#map-legend[data-current-view="access"] [data-value="4"] {background:#fc4e2a;border:#e31a1c 2px solid;}
+#map-legend[data-current-view="access"] [data-value="3"] {background:#e31a1c;border:#bd0026 2px solid;}
+#map-legend[data-current-view="access"] [data-value="2"] {background:#bd0026;border:#800026 2px solid;}
+#map-legend[data-current-view="access"] [data-value="1"] {background:#800026;border:#67000D 2px solid;}
 
 .bwl-logo-a5 {fill:#fd8d3c;}
 .bwl-logo-a4 {fill:#fc4e2a;}

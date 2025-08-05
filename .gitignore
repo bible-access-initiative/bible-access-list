@@ -21,7 +21,6 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
-
 public/images/bible-project
 public/images/covers
 public/data/search.bin

@@ -12,4 +12,5 @@ const generalCollection = defineCollection({
 
 export const collections = {
 	about: generalCollection,
+	countries: generalCollection,
 };
