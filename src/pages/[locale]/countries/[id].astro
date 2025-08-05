@@ -33,10 +33,9 @@ const { Content, headings } = await render(currentPage);
 
 <Layout meta={{title: country.country, description: `Bible access and shortage data for ${country.country}`}}>
 
-<div class="grid grid-cols-4 mx-auto pt-12 max-w-7xl">
-    <MarkDownAside {headings} />
-<div class="col-span-3 prose !max-w-none dark:prose-invert">
+
+<div class="col-span-3 prose mx-auto pt-12 max-w-7xl dark:prose-invert">
   <Content />
 </div>
-</div>
+
 </Layout>
