@@ -1,0 +1,43 @@
+"&lt;50% literacy": "literacy_poor.svg"
+"50-70% literacy": "literacy_low.svg"
+
+"&lt;50% of population access to electricity": "electric_extreme.svg"
+"50-70% of population access to electricity": "electric_high.svg"
+"Distribution restrictions for part of population": ""
+"Distribution restrictions for part of the country": ""
+"Distribution restrictions": ""
+"Extremely poor infrastructure": ""
+
+"Import limitations for part of country": ""
+"Import restrictions for part of population": ""
+"Import restrictions for part of the country": ""
+"Import restrictions": ""
+
+"Include": ""
+"No icon": ""
+
+"No distribution": ""
+"No importing": ""
+"No Ownership": ""
+"No ownership": ""
+"No printing": ""
+"No storage": ""
+
+
+
+"Ownership restrictions for part of population": ""
+"Ownership restrictions for part of the country": ""
+"Ownership restrictions": ""
+
+"Poor infrastructure": ""
+
+"Print restrictions for part of population": ""
+"Print restrictions for part of the country": ""
+"Print restrictions": ""
+"Storage restrictions for part of population": ""
+"Storage restrictions for part of the country": ""
+"Storage restrictions": ""
+
+"Poor": ""
+"Very Poor": ""
+"Extremely Poor": ""

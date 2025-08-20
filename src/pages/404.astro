@@ -1,0 +1,21 @@
+---
+import Layout from "~/layouts/PageLayout.astro"
+---
+
+<Layout>
+
+  <div class="container flex flex-col text-center items-center justify-center px-5 mx-auto mt-12">
+      <h2 class="mb-8 font-bold text-9xl">
+        <span class="sr-only">Error</span>
+        <span class="bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-amber-500">
+          404
+        </span>
+      </h2>
+      <p class="text-3xl font-semibold md:text-3xl mt-4 mb-8">Sorry, we couldn't find this page.</p>
+      <a rel="noopener noreferrer" href="/" class="text-white bg-stone-900 hover:bg-stone-800 dark:bg-stone-700 dark:hover:bg-stone-800 ml-4 p-2 rounded-md">
+        Back to homepage
+      </a>
+  </div>
+  
+</Layout>
+

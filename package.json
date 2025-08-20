@@ -1,0 +1,53 @@
+{
+  "name": "bal",
+  "description": "",
+  "type": "module",
+  "version": "5.0.0",
+  "packageManager": "pnpm@10.5.2",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "fetch": "node ./build_scripts/fetch-data.mjs && node ./build_scripts/fetch-wikidata.mjs",
+    "build": "node ./build_scripts/fetch-data.mjs && node ./build_scripts/fetch-wikidata.mjs && astro build",
+    "build-test": "astro build  --experimental-static-build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.11",
+    "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/tailwind": "^6.0.0",
+    "@fontsource/cormorant": "^5.2.6",
+    "@fontsource/merriweather": "^5.2.9",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.9",
+    "@tailwindcss/line-clamp": "^0.4.4",
+    "@tailwindcss/typography": "^0.5.15",
+    "astro": "^5.3.1",
+    "astro-spa": "^1.3.9",
+    "autoprefixer": "10.4.14",
+    "cheerio": "1.0.0-rc.12",
+    "csv-parse": "^5.6.0",
+    "dotenv": "^16.5.0",
+    "fs": "0.0.1-security",
+    "fuzzytable": "0.1.9",
+    "leaflet": "^1.9.4",
+    "leaflet-switch-basemap": "^1.0.6",
+    "leaflet.markercluster": "^1.5.3",
+    "marked": "^14.1.2",
+    "mysql2": "^3.11.0",
+    "mysql2-promise": "^0.1.4",
+    "pbf": "^4.0.1",
+    "postcss": "^8.4.45",
+    "postcss-cli": "^10.1.0",
+    "postcss-import": "^15.1.0",
+    "protobufjs": "^7.4.0",
+    "svg-toolbelt": "^0.7.0",
+    "tailwindcss": "^3.4.10",
+    "astro-worldmap-choropleth": "0.0.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.1.2",
+    "node-fetch": "^3.3.2"
+  }
+}

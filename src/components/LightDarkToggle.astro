@@ -1,0 +1,29 @@
+---
+
+---
+
+<button
+        type="button"
+        aria-label="Toggle between Dark and Light mode"
+        class="relative inline-flex h-6 w-10 mx-1 flex-shrink-0 cursor-pointer rounded-full border transition-colors duration-200 ease-in-out shadow-inner bg-gray-200 border-gray-400 hover:bg-gray-400 dark:bg-stone-600 dark:hover:bg-stone-500"
+        role="switch"
+        data-aw-toggle-color-scheme>
+    <span class="sr-only">Toggle dark mode</span>
+    <span class="pointer-events-none relative inline-block h-6 w-6 transform rounded-full shadow ring-0 transition-transform duration-200 ease-in-out translate-x-0 dark:translate-x-4 bg-white dark:bg-stone-900">
+
+    <span aria-hidden="true" class="absolute inset-0 flex h-6 w-6 border rounded-full items-center justify-center opacity-0 dark:opacity-100 transition-opacity duration-200 ease-in">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="#fff" stroke="currentColor" stroke-width="1.5" class="w-4 h-4" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 15a9.72 9.72 0 0 1-3.75.75 9.75 9.75 0 0 1-9-13.5 9.75 9.75 0 0 0-6 9A9.75 9.75 0 0 0 12.75 21a9.75 9.75 0 0 0 9-6Z"/>
+        </svg>
+    </span>
+
+    <span class="absolute inset-0 flex h-6 w-6 border border-yellow-300 rounded-full items-center justify-center opacity-100 dark:opacity-0 transition-opacity duration-200 ease-out scale-110">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5 scale-110">
+            <g fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4" fill="#FCD34D"/>
+                <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </g>
+        </svg>
+    </span>
+    </span>
+</button>

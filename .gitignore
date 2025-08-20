@@ -1,0 +1,32 @@
+# build output
+dist/
+
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+./env/.env*
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+public/images/bible-project
+public/images/covers
+public/data/search.bin
+src/data/bal.json
+src/data/country_data.json
+*.iml
+.idea/material_theme_project_new.xml
+.idea/modules.xml
+.idea/vcs.xml

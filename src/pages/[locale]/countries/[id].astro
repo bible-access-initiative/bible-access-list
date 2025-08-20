@@ -1,0 +1,44 @@
+---
+
+import Layout from "~/layouts/PageLayout.astro";
+import i18n from '~/components/i18n/index.js';
+import { getEntry, getCollection } from 'astro:content';
+import bal from "~/data/country_data.json"
+import CountryBanner from "~/components/CountryBanner.astro"
+export async function getStaticPaths() {
+    const countries = await getCollection('countries');
+    const paths = countries.map((country) => {
+        const parts = country.id.split('/');
+        const locale = parts[0];
+        const id = parts[1];
+        return {
+            params: { locale, id },
+            props: { country }
+        };
+    });
+    return paths;
+}
+
+const { locale, id } = Astro.params;
+const { country: countryData } = Astro.props;
+
+let country;
+if (countryData) {
+    country = [countryData];
+} else {
+    const indexes = await getCollection("countries", ({ id }) => {
+        return id.startsWith(`${locale}/`);
+    });
+    country = indexes.filter(c => c.id == `${locale}/${id}`);
+}
+
+if (country && country[0]) {
+    country[0].ref = bal[id];
+}
+
+---
+
+<Layout>
+    <CountryBanner data={country[0].ref} id={id} />
+    <div class="prose prose-xl mt-12 mx-auto dark:prose-invert" set:html={country[0].rendered?.html}></div>
+</Layout>

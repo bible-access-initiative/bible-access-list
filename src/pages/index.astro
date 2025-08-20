@@ -1,0 +1,13 @@
+---
+	import { SITE } from '~/config.js';
+	const locales = SITE.locales
+---
+<br><br><br>
+<noscript>
+    <meta http-equiv="Refresh" content="0; url='/en/'" />
+</noscript>
+<script is:inline define:vars={{locales}}>
+    const navLang = navigator.language || navigator.userLanguage;
+    const lang = (navLang != undefined) ? (navLang in locales) ? navLang.substring(0,2) : 'en' : 'en';
+    window.location.pathname = `/${lang}/`;
+</script>

@@ -1,0 +1,36 @@
+---
+import i18n from '~/components/i18n/index.js';
+import { getLanguageFromPath } from '~/config.js';
+const locale = getLanguageFromPath(Astro.url);
+const t = i18n[locale]
+const { breadcrumbs } = Astro.props;
+---
+
+{
+  breadcrumbs ? (
+    <nav
+      class="flex items-center h-12 space-x-2 z-30 relative pt-3 px-4 rounded-t min-w-xl font-bold text-xs lg:text-sm xl:text-base"
+      aria-label="Breadcrumb"
+    >
+      <a href={`/${locale}`} class="text-shadow text-stone-200 hover:text-white">
+        <svg class="block h-5 w-5 ltr:mr-2 rtl:ml-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M9.3 2.3a1 1 0 0 1 1.4 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.7-1.7l7-7z"/></svg>
+        <span class="sr-only">{t?.home ?? "Home"}</span>
+      </a>
+      {breadcrumbs.map((breadcrumb) => {
+        return breadcrumb.url ? (
+          <a class="text-shadow text-stone-200 hover:text-white" href={breadcrumb.url}>
+            <span class="font-mono ltr:mr-2 rtl:ml-2">/</span>
+            {breadcrumb.title}
+          </a>
+        ) : (
+          <span class="text-shadow text-stone-300">
+            <span class="font-mono ltr:mr-2 rtl:ml-2">/</span>
+            {breadcrumb.title}
+          </span>
+        );
+      })}
+    </nav>
+  ) : (
+    ""
+  )
+}

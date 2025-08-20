@@ -1,0 +1,24 @@
+---
+
+import i18n from '~/components/i18n/index.js';
+import LightDarkToggle from '~/components/LightDarkToggle.astro';
+import Languages from '~/components/Languages.astro';
+import { getLanguageFromPath, SITE } from '~/config.js';
+const locale = getLanguageFromPath(Astro.url);
+const t = i18n[locale]
+
+let url = Astro.url.pathname.substring(4)
+let locales = SITE.locales
+---
+
+<div class="flex justify-end">
+<ul class="flex flex-row items-center sm:pt-0 self-center w-auto mx-auto sm:text-sm md:text-base xl:text-lg whitespace-nowrap">
+  <li><a href={`/${locale}/research/`} class="hover:text-stone-900 dark:hover:text-white px-2 md:px-4 py-1">{t?.research ?? 'Research'}</a></li>
+  <li><a href={`/${locale}/volunteer`} class="hover:text-stone-900 dark:hover:text-white px-2 md:px-4 py-1">{t?.volunteer ?? 'Volunteer'}</a></li>
+  <li><a href={`/${locale}/about`} class="hover:text-stone-900 dark:hover:text-white px-2 md:px-4 py-1">{t?.about ?? 'About'}</a></li>
+  <li class="flex align-middle space-x-2.5">
+    <Languages />
+    <LightDarkToggle />
+  </li>
+</ul>
+</div>

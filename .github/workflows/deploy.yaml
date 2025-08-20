@@ -1,0 +1,56 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+      GOOGLE_SHEET_GID: ${{ secrets.GOOGLE_SHEET_GID }}
+    steps:
+      - name: Check env vars
+        run: |
+          echo "GOOGLE_SHEET_ID=$GOOGLE_SHEET_ID"
+          echo "GOOGLE_SHEET_GID=$GOOGLE_SHEET_GID"
+          if [ -z "$GOOGLE_SHEET_ID" ] || [ -z "$GOOGLE_SHEET_GID" ]; then
+            echo "Missing environment vars" && exit 1
+          fi
+
+      - name: Checkout your repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.5.2
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build the site
+        run: pnpm run build
+
+      - name: Upload build directory
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

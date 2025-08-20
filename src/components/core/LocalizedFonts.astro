@@ -1,0 +1,34 @@
+---
+import { getLanguageFromPath } from "~/config.js";
+const locale = getLanguageFromPath(Astro.url);
+
+const fonts = {
+  ar: 'Noto Sans Arabic',
+  am: 'Noto Sans Ethiopic',
+  bn: 'Noto Sans Bengali',
+  de: 'Noto Sans Devanagari',
+  es: 'Noto Sans',
+  mr: 'Noto Sans Marathi',
+  sw: 'Noto Sans Swahili',
+  ta: 'Noto Sans Tamil',
+  te: 'Noto Sans Telugu',
+  hn: 'Noto Sans Devanagari',
+  zh: 'Noto Sans SC',
+};
+---
+{(Object.keys(fonts).includes(locale)) ?( 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href={`https://fonts.googleapis.com/css2?family=${fonts[locale]?.replaceAll(" ", "+")}:wght@100..900&display=swap`} rel="stylesheet">
+<style>
+{locale == "ar" ? body {font-family:'Noto Sans Arabic', sans-serif;} : ""}
+{locale == "am" ? body {font-family:'Noto Sans Ethiopic', sans-serif;} : ""}
+{locale == "bn" ? body {font-family:'Noto Sans Bengali', sans-serif;} : ""}
+{locale == "de" ? body {font-family:'Noto Sans Devanagari', sans-serif;} : ""}
+{locale == "mr" ? body {font-family:'Noto Sans Marathi', sans-serif;} : ""}
+{locale == "sw" ? body {font-family:'Noto Sans Swahili', sans-serif;} : ""}
+{locale == "ta" ? body {font-family:'Noto Sans Tamil', sans-serif;} : ""}
+{locale == "te" ? body {font-family:'Noto Sans Telugu', sans-serif;} : ""}
+{locale == "hn" ? body {font-family:'Noto Sans Devanagari', sans-serif;} : ""}
+</style>)
+: ""}

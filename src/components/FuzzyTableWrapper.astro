@@ -1,0 +1,100 @@
+---
+import i18n from '~/components/i18n/index.js';
+
+const { data, head, filters, locale } = Astro.props;
+
+let filtersJSON = filters ? JSON.stringify(filters, (key, value) =>
+    (value instanceof RegExp) ? value.toString() : value
+  ) : '[]';
+
+---
+
+<div
+  class="flex flex-row max-w-7xl mx-auto"
+  id="FuzzyTableWrapper"
+  data-rows={JSON.stringify(data)}
+  data-head={JSON.stringify(head)}
+  data-filters={filtersJSON}
+  data-locale={locale}>
+</div>
+
+<script>
+import FuzzyTable from "fuzzytable/src/FuzzyTable.js";
+
+  const localeMatches = {
+  zh: 'zh-u-nu-hanidec', // Chinese numerals
+  hn: 'hi-IN-u-nu-deva', // Hindi numerals in Devanagari script
+  te: 'te-IN-u-nu-telu', // Telugu numerals
+  ta: 'ta-IN-u-nu-deva', // Tamil numerals
+  bn: 'bn-IN-u-nu-beng', // Bengali numerals
+  ar: 'ar-u-nu-arab',    // Arabic numerals
+  mr: 'mr-IN-u-nu-deva', // Marathi numerals
+};
+
+
+function regexReviver(key, value) {
+  if (typeof value === 'string' && /^\/.*\/$/.test(value)) {
+    let match = value.match(/\/(.*?)\/([gimsuy]*)$/);  // Extract pattern and flags
+    return new RegExp(match[1], match[2]);  // Recreate RegExp object
+  }
+  return value;
+}
+
+  document.addEventListener("astro:page-load", () => {
+    const fuzzywrapper = document.getElementById("FuzzyTableWrapper");
+
+    const classesOverride = {
+        pagination: '',
+        sortArrow: '',
+        arrowUp: 'absolute right-2 top-1.5 ext-sm',
+        arrowDown: 'absolute right-2 bottom-1.5 text-sm',
+        searchIcon: 'absolute block w-6 h-6 z-30 mt-3 mx-2 text-stone-400 dark:text-white',
+        searchInput: 'relative indent-6 block w-full h-12 px-4 text-sm border border-stone-400 dark:border-stone-800 dark:bg-stone-700 text-stone-800 dark:text-stone-300 placeholder-stone-800 dark:placeholder-stone-100 rtl:rounded-tr-xl',
+        paginationButton: 'w-16 h-10 inline-flex justify-center items-center border dark:border-stone-900',
+        paginationButtonCurrent: 'text-lg font-bold text-red-500',
+        paginationNav: 'relative z-0 flex mt-4 justify-center rounded-md -space-x-px dark:text-stone-100',
+        paginationTopArrow: 'relative inline-flex items-center bg-white border-y border-stone-400 dark:border-stone-800 dark:bg-stone-700 hover:font-semibold px-2.5 h-12 dark:text-stone-100 focus:z-10',
+        topPaginationNav: 'relative flex items-center h-12 text-sm border-y border-stone-400 dark:border-stone-800 dark:bg-stone-700 dark:bg-stone-700 text-stone-700 dark:text-stone-300 placeholder-stone-800 dark:placeholder-stone-100',
+        topPaginationCurrent: 'block w-auto text-base bg-white dark:bg-stone-700 border-y border-stone-400 dark:border-stone-800 dark:bg-stone-700 text-center whitespace-no-wrap px-2.5 h-12 flex justify-center items-center',
+        downloadWrapper: '',
+        downloadButton: 'relative inline-flex items-center bg-white dark:bg-stone-700 px-2 h-12 dark:text-stone-100 focus:z-10 border-y border-l border-stone-400 dark:border-stone-800 dark:bg-stone-700',
+        downloadDropdown: 'absolute left-0 z-50 -mr-1 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-stone-800 focus:outline-none',
+        downloadDropdownButton: 'text-stone-700 dark:text-stone-100 hover:dark:bg-stone-900 hover:bg-stone-200 w-full block px-4 py-2 text-sm text-left',
+        downloadDropdownInfo: 'text-center text-xs text-stone-700 dark:text-stone-100 py-2',
+        fieldsetWrap: 'block mt-8 w-full bg-stone-200 dark:bg-stone-700 text-sm font-semibold p-3 text-stone-900 dark:text-stone-100 border-b border-stone-200 dark:border-stone-500 rounded-t-lg',
+        fieldsetFilterWrap: 'mb-4 dark:bg-stone-900 border border-stone-200 dark:border-stone-950 p-2',
+        fieldset: 'mb-4 dark:bg-stone-900 border border-stone-200 dark:border-stone-950 p-2',
+        filterContainer: 'hidden sm:flex flex-col lg:w-1/5 ltr:mr-4 rtl:ml-4',
+        filterButton: 'text-sm relative px-2 py-1 my-2 w-full flex items-center justify-center cursor-pointer rounded-lg border dark:text-stone-100 dark:bg-stone-800 border-stone-200 dark:border-stone-500 shadow-sm',
+        filterButtonActive: 'bg-stone-400 dark:bg-stone-950 text-white border-stone-800',
+        tableContainer: 'flex flex-col w-full relative z-10 max-w-7xl mx-auto',
+        tableColumn: 'whitespace-nowrap px-3 py-2 text-sm text-stone-800 dark:text-stone-100 border border-stone-200 dark:border-stone-800 relative truncate max-w-[240px]',
+        sizeSelect: 'appearance-none w-full h-full mr-6 bg-white dark:bg-stone-700 dark:text-stone-100 text-center border-stone-400 dark:border-stone-800 rtl:rounded-tl-lg ltr:rounded-tr-lg',
+        tableHeader: 'flex flex-row mt-8 h-12',
+        tableCellLink: 'text-red-700 dark:text-red-400 block py-1',
+        tableCellSubtitle: 'block text-sm text-stone-500 dark:text-stone-400 tracking-wide',
+        table: 'w-full w-6xl overflow-x-scroll',
+        thead: 'bg-stone-100 dark:bg-stone-700',
+        tbody: 'divide-y divide-stone-200 dark:divide-stone-800 bg-white dark:bg-stone-800 border border-stone-500 dark:border-none',
+        th: 'relative px-1 py-3 rtl:pr-7 ltr:text-left rtl:text-right text-sm font-semibold text-stone-900 dark:text-stone-100 cursor-pointer',
+        tr: 'even:bg-stone-100 dark:even:bg-stone-900',
+        td: 'whitespace-nowrap px-3 py-2 text-sm text-stone-800 dark:text-stone-100 border border-stone-200 dark:border-stone-800 relative truncate max-w-[240px]',
+    }
+
+    let filters = []
+    if(fuzzywrapper?.dataset?.filters) {
+      filters = JSON.parse(fuzzywrapper?.dataset?.filters, regexReviver)
+    }
+    
+    if (fuzzywrapper) {
+      new FuzzyTable("FuzzyTableWrapper", JSON.parse(fuzzywrapper.dataset.rows), JSON.parse(fuzzywrapper.dataset.head), {
+        t: fuzzywrapper.dataset.t,
+        filters: filters,
+        classes: classesOverride,
+        locale: localeMatches[fuzzywrapper.dataset.locale] ?? "en-US",
+        pageSize: 50,
+        pageSizes: [50,100,500,2000]
+      });
+    }
+  });
+</script>

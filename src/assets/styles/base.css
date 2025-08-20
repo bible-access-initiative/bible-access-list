@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+path                     {fill: #ccc;text-shadow: 3px 2px 4px rgba(0,0,0,0.50)}
+
+[data-current-view="access"] a[data-access_rank="8"] path,
+.access-rank a[data-bwl-access="8"] path  {fill: #fbf1d2;stroke: #eed191;stroke-width: 2px}
+[data-current-view="access"] a[data-access_rank="7"] path,
+.access-rank a[data-bwl-access="7"] path  {fill: #f2da9c;stroke: #f9c274;stroke-width: 2px}
+[data-current-view="access"] a[data-access_rank="6"] path,
+.access-rank a[data-bwl-access="6"] path  {fill: #f4bc7a;stroke: #f8a673;stroke-width: 2px}
+[data-current-view="access"] a[data-access_rank="5"] path,
+.access-rank a[data-bwl-access="5"] path  {fill:#fd8d3c;stroke:#fc4e2a;stroke-width: 2px}
+[data-current-view="access"] a[data-access_rank="4"] path,
+.access-rank a[data-bwl-access="4"] path  {fill:#fc4e2a;stroke:#e31a1c;stroke-width: 2px}
+[data-current-view="access"] a[data-access_rank="3"] path,
+.access-rank a[data-bwl-access="3"] path  {fill:#e31a1c;stroke:#bd0026;stroke-width: 2px}
+[data-current-view="access"] a[data-access_rank="2"] path,
+.access-rank a[data-bwl-access="2"] path  {fill:#bd0026;stroke:#800026;stroke-width: 2px}
+[data-current-view="access"] a[data-access_rank="1"] path,
+.access-rank a[data-bwl-access="1"] path  {fill:#800026;stroke:#67000D;stroke-width: 2px}
+
+[data-current-view="needs"] a[data-needs_rank="1"] path,
+.needs-rank a[data-bwl-needs="1"] path    {fill:#004d40;stroke:#c7e9b4;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="2"] path,
+.needs-rank a[data-bwl-needs="2"] path    {fill:#00675b;stroke:#c7e9b4;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="3"] path,
+.needs-rank a[data-bwl-needs="3"] path    {fill:#00806d;stroke:#c7e9b4;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="4"] path,
+.needs-rank a[data-bwl-needs="4"] path    {fill:#229e82;stroke:#7fcdbb;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="5"] path,
+.needs-rank a[data-bwl-needs="5"] path    {fill:#3fbf9c;stroke:#41b6c4;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="6"] path,
+.needs-rank a[data-bwl-needs="6"] path    {fill:#66d1ad;stroke:#c9c6b7;;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="7"] path,
+.needs-rank a[data-bwl-needs="7"] path    {fill:#8ce3bf;stroke:#c9c6b7;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="8"] path,
+.needs-rank a[data-bwl-needs="8"] path    {fill:#b4f0d4;stroke:#c9c6b7;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="9"] path,
+.needs-rank a[data-bwl-needs="9"] path    {fill:#d2f8e6;stroke:#c9c6b7;stroke-width: 2px}
+[data-current-view="needs"] a[data-needs_rank="10"] path,
+.needs-rank a[data-bwl-needs="10"] path   {fill:#e6fcf0;stroke:#c9c6b7;stroke-width: 2px}
+
+#map-legend[data-current-view="needs"] [data-value="1"]   {background-color:#004d40;border: solid 2px #c7e9b4}
+#map-legend[data-current-view="needs"] [data-value="2"]   {background-color:#00675b;border: solid 2px #c7e9b4}
+#map-legend[data-current-view="needs"] [data-value="3"]   {background-color:#00806d;border: solid 2px #c7e9b4}
+#map-legend[data-current-view="needs"] [data-value="4"]   {background-color:#229e82;border: solid 2px #7fcdbb}
+#map-legend[data-current-view="needs"] [data-value="5"]   {background-color:#3fbf9c;border: solid 2px #41b6c4}
+#map-legend[data-current-view="needs"] [data-value="6"]   {background-color:#66d1ad;border: solid 2px #c9c6b7}
+#map-legend[data-current-view="needs"] [data-value="7"]   {background-color:#8ce3bf;border: solid 2px #c9c6b7}
+#map-legend[data-current-view="needs"] [data-value="8"]   {background-color:#b4f0d4;border: solid 2px #c9c6b7}
+#map-legend[data-current-view="needs"] [data-value="9"]   {background-color:#d2f8e6;border: solid 2px #c9c6b7}
+#map-legend[data-current-view="needs"] [data-value="10"]   {background-color:#e6fcf0;border: solid 2px #c9c6b7}
+
+#map-legend[data-current-view="access"] [data-value="8"] {background: #fbf1d2;border: #eed191 2px solid;}
+#map-legend[data-current-view="access"] [data-value="7"] {background: #f2da9c;border: #f9c274 2px solid;}
+#map-legend[data-current-view="access"] [data-value="6"] {background: #f4bc7a;border: #f8a673 2px solid;}
+#map-legend[data-current-view="access"] [data-value="5"] {background:#fd8d3c;border:#fc4e2a 2px solid;}
+#map-legend[data-current-view="access"] [data-value="4"] {background:#fc4e2a;border:#e31a1c 2px solid;}
+#map-legend[data-current-view="access"] [data-value="3"] {background:#e31a1c;border:#bd0026 2px solid;}
+#map-legend[data-current-view="access"] [data-value="2"] {background:#bd0026;border:#800026 2px solid;}
+#map-legend[data-current-view="access"] [data-value="1"] {background:#800026;border:#67000D 2px solid;}
+
+.bwl-logo-a5 {fill:#fd8d3c;}
+.bwl-logo-a4 {fill:#fc4e2a;}
+.bwl-logo-a3 {fill:#e31a1c;}
+.bwl-logo-a2 {fill:#bd0026;}
+.bwl-logo-a1 {fill:#800026;}
+
+.bwl-logo-n5 {fill:#c7e9b4;}
+.bwl-logo-n4 {fill:#7fcdbb;}
+.bwl-logo-n3 {fill:#41b6c4;}
+.bwl-logo-n2 {fill:#1d91c0;}
+.bwl-logo-n1 {fill:#225ea8;}
+
+.map-tab {
+    @apply relative inline-flex items-center px-5 py-2
+    opacity-80 hover:opacity-100 border border-t-0 focus:z-10 shadow-lg
+    bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-200 border-stone-300 dark:border-stone-500
+    hover:bg-stone-100 dark:hover:bg-stone-700 hover:text-stone-900 dark:hover:text-stone-100;
+}
+
+.map-tab.active {
+    @apply !text-orange-700 dark:!text-orange-400 !opacity-100 font-semibold;
+}
+
